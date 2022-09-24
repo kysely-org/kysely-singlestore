@@ -29,6 +29,7 @@ export interface SinglestoreDataApiRequestBody {
 export interface SinglestoreDataApiRequestHeaders {
   Authorization: `Basic ${string}`
   'Content-Type': 'application/json'
+  [x: string]: string
 }
 
 export type SinglestoreDataApiExecRequestBody = SinglestoreDataApiRequestBody
