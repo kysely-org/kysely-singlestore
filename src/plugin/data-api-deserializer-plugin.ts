@@ -35,16 +35,20 @@ export interface SinglestoreDataApiDeserializerPluginConfig {
 }
 
 export class SinglestoreDataApiDeserializerPlugin implements KyselyPlugin {
+  #columnMetadataStore: SinglestoreDataApiColumnMetadataStore | undefined
   readonly #config: SinglestoreDataApiDeserializerPluginConfig
   readonly #rootOperationNodeDictionary: WeakMap<object, RootOperationNode>
 
-  constructor(config: SinglestoreDataApiDeserializerPluginConfig) {
+  constructor(config?: SinglestoreDataApiDeserializerPluginConfig) {
     this.#config = {...config}
     this.#rootOperationNodeDictionary = new WeakMap()
   }
 
   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
     const {node} = args
+
+    // lazy instantiation -- telling connection to start storing column metadata.
+    this.#columnMetadataStore = SinglestoreDataApiColumnMetadataStore.getInstance()
 
     this.#rootOperationNodeDictionary.set(args.queryId, node)
 
@@ -69,9 +73,9 @@ export class SinglestoreDataApiDeserializerPlugin implements KyselyPlugin {
 
     const {sql} = new MysqlQueryCompiler().compileQuery(rootOperationNode)
 
-    const columnMetadata = SinglestoreDataApiColumnMetadataStore.getInstance().read(sql)
+    const columnMetadata = this.#columnMetadataStore!.read(sql)
 
-    if (!columnMetadata) {
+    if (!columnMetadata?.length) {
       throw new Error('Missing column metadata!')
     }
 
