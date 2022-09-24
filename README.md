@@ -25,7 +25,6 @@ const db = new Kysely<Database>({
     fetch,
     hostname: '<hostname>',
     password: '<password>',
-    port: '<port>',
     username: '<username>',
   }),
 })
