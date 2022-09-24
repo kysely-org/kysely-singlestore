@@ -34,12 +34,15 @@
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "prepack": "pnpm run build",
+    "test": "jest --passWithNoTests",
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
     "kysely": "0.x"
   },
   "devDependencies": {
+    "@swc/core": "^1.3.3",
+    "@swc/jest": "^0.2.22",
     "@tsconfig/node14": "^1.0.3",
     "@types/jest": "^29.0.3",
     "@types/node": "^16",

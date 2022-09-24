@@ -3,7 +3,6 @@ export interface SinglestoreDataApiDialectConfig {
   fetch: (input: string, init?: FetchRequest) => Promise<FetchResponse>
   hostname: string
   password: string
-  port: number
   username: string
 }
 
