@@ -2,6 +2,7 @@
 
 # kysely-singlestore
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f759c07e4dd4f9889a21ea2a49d5a2e)](https://www.codacy.com/gh/igalklebanov/kysely-singlestore/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=igalklebanov/kysely-singlestore&amp;utm_campaign=Badge_Grade)
 ![Powered by TypeScript](https://img.shields.io/badge/powered%20by-typescript-blue.svg)
 
 [Kysely](https://github.com/koskimas/kysely) dialects, plugins and other goodies for [Singlestore](https://www.singlestore.com/) (formerly MemSQL).
