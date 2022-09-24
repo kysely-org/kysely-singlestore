@@ -1,5 +1,7 @@
-import type {CompiledQuery, DatabaseConnection, Driver, QueryResult} from 'kysely'
+import type {CompiledQuery, DatabaseConnection, QueryResult} from 'kysely'
 
+import {isCompiledSelectQuery, SinglestoreDataApiColumnMetadataStore, type CompiledSelectQuery} from '../../util'
+import {SinglestoreDataApiDatabaseError, SinglestoreDataApiStreamingNotSupportedError} from './data-api-errors'
 import type {
   FetchResponse,
   SinglestoreDataApiDialectConfig,
@@ -9,79 +11,30 @@ import type {
   SinglestoreDataApiQueryTuplesResponseBody,
   SinglestoreDataApiRequestBody,
   SinglestoreDataApiRequestHeaders,
-  SinglestoreDataApiResponseBodyError,
-} from './singlestore-data-api-dialect-config'
+} from './types'
 
 const API_VERSION = 'v2'
 
-export class SinglestoreDataApiDriver implements Driver {
+export class SinglestoreDataApiConnection implements DatabaseConnection {
   readonly #config: SinglestoreDataApiDialectConfig
 
   constructor(config: SinglestoreDataApiDialectConfig) {
     this.#config = {...config}
   }
 
-  async init(): Promise<void> {
-    // noop
-  }
-
-  async acquireConnection(): Promise<DatabaseConnection> {
-    return new SinglestoreDataApiConnection(this.#config)
-  }
-
-  async beginTransaction(): Promise<void> {
-    this.#throwTransactionError()
-  }
-
-  async commitTransaction(): Promise<void> {
-    this.#throwTransactionError()
-  }
-
-  async rollbackTransaction(): Promise<void> {
-    this.#throwTransactionError()
-  }
-
-  async releaseConnection(): Promise<void> {
-    // noop
-  }
-
-  async destroy(): Promise<void> {
-    // noop
-  }
-
-  #throwTransactionError(): never {
-    throw new SinglestoreDataApiTransactionsNotSupportedError()
-  }
-}
-
-export class SinglestoreDataApiTransactionsNotSupportedError extends Error {
-  constructor() {
-    super('Singlestore Data API does not support transactions!')
-
-    this.name = 'SinglestoreDataApiTransactionsNotSupportedError'
-  }
-}
-
-class SinglestoreDataApiConnection implements DatabaseConnection {
-  #config: SinglestoreDataApiDialectConfig
-
-  constructor(config: SinglestoreDataApiDialectConfig) {
-    this.#config = {...config}
-  }
-
   async executeQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
-    if (compiledQuery.query.kind === 'SelectQueryNode') {
+    if (isCompiledSelectQuery(compiledQuery)) {
       return await this.#executeSelectQuery(compiledQuery)
     }
 
     return await this.#executeMutationQuery(compiledQuery)
   }
 
-  streamQuery<R>(): AsyncIterableIterator<QueryResult<R>> {
+  streamQuery(): never {
     throw new SinglestoreDataApiStreamingNotSupportedError()
   }
 
-  async #executeSelectQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
+  async #executeSelectQuery<R>(compiledQuery: CompiledSelectQuery): Promise<QueryResult<R>> {
     const url = this.#resolveRequestUrl('query/tuples')
 
     const requestBody: SinglestoreDataApiQueryTuplesRequestBody = this.#createRequestBody(compiledQuery)
@@ -92,8 +45,14 @@ class SinglestoreDataApiConnection implements DatabaseConnection {
       throw new SinglestoreDataApiDatabaseError(error.message, 400, error)
     }
 
+    const [result] = results
+
+    if (SinglestoreDataApiColumnMetadataStore.enabled) {
+      SinglestoreDataApiColumnMetadataStore.getInstance().write(compiledQuery.sql, result.columns)
+    }
+
     return {
-      rows: results[0].rows,
+      rows: result.rows,
     }
   }
 
@@ -161,26 +120,5 @@ class SinglestoreDataApiConnection implements DatabaseConnection {
     }
 
     throw error
-  }
-}
-
-export class SinglestoreDataApiStreamingNotSupportedError extends Error {
-  constructor() {
-    super('Singlestore Data API does not supported streaming!')
-
-    this.name = 'SinglestoreDataApiStreamingNotSupportedError'
-  }
-}
-
-export class SinglestoreDataApiDatabaseError extends Error {
-  body: SinglestoreDataApiResponseBodyError
-  status: number
-
-  constructor(message: string, status: number, body: SinglestoreDataApiResponseBodyError) {
-    super(message)
-
-    this.status = status
-    this.name = 'SinglestoreDataApiDatabaseError'
-    this.body = body
   }
 }
