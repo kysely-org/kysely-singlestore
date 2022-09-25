@@ -7,15 +7,15 @@ export class SinglestoreDataApiDatabaseError extends Error {
   constructor(message: string, status: number, body: SinglestoreDataApiResponseBodyError) {
     super(message)
 
-    this.status = status
-    this.name = 'SinglestoreDataApiDatabaseError'
     this.body = body
+    this.name = 'SinglestoreDataApiDatabaseError'
+    this.status = status
   }
 }
 
 export class SinglestoreDataApiStreamingNotSupportedError extends Error {
   constructor() {
-    super('Singlestore Data API does not supported streaming!')
+    super('Singlestore Data API does not support streaming!')
 
     this.name = 'SinglestoreDataApiStreamingNotSupportedError'
   }
