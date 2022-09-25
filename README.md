@@ -2,6 +2,7 @@
 
 # kysely-singlestore
 
+[![npm version](https://badge.fury.io/js/kysely-singlestore.svg)](https://badge.fury.io/js/kysely-singlestore)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f759c07e4dd4f9889a21ea2a49d5a2e)](https://www.codacy.com/gh/igalklebanov/kysely-singlestore/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=igalklebanov/kysely-singlestore&amp;utm_campaign=Badge_Grade)
 ![Powered by TypeScript](https://img.shields.io/badge/powered%20by-typescript-blue.svg)
 
