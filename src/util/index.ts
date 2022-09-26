@@ -1,3 +1,3 @@
-export * from './compiled-select-query'
-export * from './data-api-column-metadata-store'
-export * from './singlestore-data-type'
+export * from './compiled-select-query.js'
+export * from './data-api-column-metadata-store.js'
+export * from './singlestore-data-type.js'

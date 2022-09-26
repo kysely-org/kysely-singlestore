@@ -1,3 +1,3 @@
-export * from './dialect'
-export * from './plugin'
-export {SinglestoreDataType} from './util'
+export * from './dialect/index.js'
+export * from './plugin/index.js'
+export {SinglestoreDataType} from './util/index.js'

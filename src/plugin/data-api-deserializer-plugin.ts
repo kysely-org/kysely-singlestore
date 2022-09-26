@@ -9,9 +9,8 @@ import {
   type UnknownRow,
 } from 'kysely'
 
-import type {SinglestoreDataApiColumnMetadata} from '../dialect'
-import {SinglestoreDataType} from '../util'
-import {SinglestoreDataApiColumnMetadataStore} from '../util/data-api-column-metadata-store'
+import type {SinglestoreDataApiColumnMetadata} from '../dialect/index.js'
+import {SinglestoreDataApiColumnMetadataStore, SinglestoreDataType} from '../util/index.js'
 
 export interface SinglestoreDataApiDeserializerPluginConfig {
   /**

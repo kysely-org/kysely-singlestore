@@ -1,1 +1,1 @@
-export * from './data-api'
+export * from './data-api/index.js'

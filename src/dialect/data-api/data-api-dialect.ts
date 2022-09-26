@@ -1,8 +1,8 @@
 import {MysqlIntrospector, MysqlQueryCompiler, type Dialect, type Kysely} from 'kysely'
 
-import {SinglestoreDataApiAdapter} from './data-api-adapter'
-import type {SinglestoreDataApiDialectConfig} from './types'
-import {SinglestoreDataApiDriver} from './data-api-driver'
+import {SinglestoreDataApiAdapter} from './data-api-adapter.js'
+import {SinglestoreDataApiDriver} from './data-api-driver.js'
+import type {SinglestoreDataApiDialectConfig} from './types.js'
 
 export class SinglestoreDataApiDialect implements Dialect {
   #config: SinglestoreDataApiDialectConfig

@@ -1,5 +1,7 @@
 import {DialectAdapterBase} from 'kysely'
 
+import {SinglestoreDataApiLocksNotSupportedError} from './data-api-errors.js'
+
 export class SinglestoreDataApiAdapter extends DialectAdapterBase {
   get supportsReturning(): boolean {
     return false
@@ -19,13 +21,5 @@ export class SinglestoreDataApiAdapter extends DialectAdapterBase {
 
   #throwLockError(): never {
     throw new SinglestoreDataApiLocksNotSupportedError()
-  }
-}
-
-export class SinglestoreDataApiLocksNotSupportedError extends Error {
-  constructor() {
-    super('Singlestore Data API does not support locks!')
-
-    this.name = 'SinglestoreDataApiLocksNotSupportedError'
   }
 }

@@ -1,4 +1,4 @@
-import type {SinglestoreDataApiResponseBodyError} from './types'
+import type {SinglestoreDataApiResponseBodyError} from './types.js'
 
 export class SinglestoreDataApiDatabaseError extends Error {
   body: SinglestoreDataApiResponseBodyError
@@ -10,6 +10,14 @@ export class SinglestoreDataApiDatabaseError extends Error {
     this.body = body
     this.name = 'SinglestoreDataApiDatabaseError'
     this.status = status
+  }
+}
+
+export class SinglestoreDataApiLocksNotSupportedError extends Error {
+  constructor() {
+    super('Singlestore Data API does not support locks!')
+
+    this.name = 'SinglestoreDataApiLocksNotSupportedError'
   }
 }
 

@@ -1,9 +1,9 @@
 import type {DatabaseConnection, Driver} from 'kysely'
 
-import {SinglestoreDataApiColumnMetadataStore} from '../../util'
-import {SinglestoreDataApiConnection} from './data-api-connection'
-import {SinglestoreDataApiTransactionsNotSupportedError} from './data-api-errors'
-import type {SinglestoreDataApiDialectConfig} from './types'
+import {SinglestoreDataApiColumnMetadataStore} from '../../util/index.js'
+import {SinglestoreDataApiConnection} from './data-api-connection.js'
+import {SinglestoreDataApiTransactionsNotSupportedError} from './data-api-errors.js'
+import type {SinglestoreDataApiDialectConfig} from './types.js'
 
 export class SinglestoreDataApiDriver implements Driver {
   readonly #config: SinglestoreDataApiDialectConfig

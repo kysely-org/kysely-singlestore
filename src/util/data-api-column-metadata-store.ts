@@ -1,4 +1,4 @@
-import type {SinglestoreDataApiColumnMetadata} from '../dialect/data-api/types'
+import type {SinglestoreDataApiColumnMetadata} from '../dialect/index.js'
 
 /**
  * Stores column metadata per query.

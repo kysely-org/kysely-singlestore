@@ -1,0 +1,10 @@
+node_modules
+dist
+assets
+./.prettierrc.js
+./jest.config.js
+./package.json
+./pnpm-lock.yaml
+./README.md
+./tsconfig.json
+./tsup.config.ts

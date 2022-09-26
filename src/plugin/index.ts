@@ -1,1 +1,1 @@
-export * from './data-api-deserializer-plugin'
+export * from './data-api-deserializer-plugin.js'

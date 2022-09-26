@@ -1,7 +1,11 @@
 import type {CompiledQuery, DatabaseConnection, QueryResult} from 'kysely'
 
-import {isCompiledSelectQuery, SinglestoreDataApiColumnMetadataStore, type CompiledSelectQuery} from '../../util'
-import {SinglestoreDataApiDatabaseError, SinglestoreDataApiStreamingNotSupportedError} from './data-api-errors'
+import {
+  isCompiledSelectQuery,
+  SinglestoreDataApiColumnMetadataStore,
+  type CompiledSelectQuery,
+} from '../../util/index.js'
+import {SinglestoreDataApiDatabaseError, SinglestoreDataApiStreamingNotSupportedError} from './data-api-errors.js'
 import type {
   FetchResponse,
   SinglestoreDataApiDialectConfig,
@@ -11,7 +15,7 @@ import type {
   SinglestoreDataApiQueryTuplesResponseBody,
   SinglestoreDataApiRequestBody,
   SinglestoreDataApiRequestHeaders,
-} from './types'
+} from './types.js'
 
 const API_VERSION = 'v2'
 
