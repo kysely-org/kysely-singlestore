@@ -1,4 +1,4 @@
-import {DialectAdapterBase} from 'kysely'
+import {DialectAdapterBase, type Kysely} from 'kysely'
 
 import {SinglestoreDataApiLocksNotSupportedError} from './data-api-errors.js'
 
@@ -11,11 +11,11 @@ export class SinglestoreDataApiAdapter extends DialectAdapterBase {
     return false
   }
 
-  async acquireMigrationLock(): Promise<void> {
+  async acquireMigrationLock(db: Kysely<any>): Promise<void> {
     this.#throwLockError()
   }
 
-  async releaseMigrationLock(): Promise<void> {
+  async releaseMigrationLock(db: Kysely<any>): Promise<void> {
     this.#throwLockError()
   }
 
