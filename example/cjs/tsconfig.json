@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "noEmit": true,
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "strict": true
+  }
+}
