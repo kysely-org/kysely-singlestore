@@ -1,6 +1,6 @@
 {
   "name": "kysely-singlestore",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Kysely dialect for Singlestore (formerly MemSQL)",
   "repository": "https://github.com/igalklebanov/kysely-singlestore.git",
   "homepage": "https://github.com/igalklebanov/kysely-singlestore",
