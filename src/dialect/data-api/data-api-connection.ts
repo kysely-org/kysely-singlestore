@@ -1,7 +1,7 @@
 import type {CompiledQuery, DatabaseConnection, QueryResult} from 'kysely'
 
-import {isCompiledSelectQuery, type CompiledSelectQuery} from '../../util/compiled-select-query.js'
 import {SingleStoreDataApiColumnMetadataStore} from '../../util/data-api-column-metadata-store.js'
+import {isSelectQuery} from '../../util/is-select-query.js'
 import {SingleStoreDataApiDatabaseError, SingleStoreDataApiStreamingNotSupportedError} from './data-api-errors.js'
 import type {
   FetchResponse,
@@ -24,7 +24,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   }
 
   async executeQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
-    if (isCompiledSelectQuery(compiledQuery)) {
+    if (isSelectQuery(compiledQuery)) {
       return await this.#executeSelectQuery(compiledQuery)
     }
 
@@ -35,7 +35,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     throw new SingleStoreDataApiStreamingNotSupportedError()
   }
 
-  async #executeSelectQuery<R>(compiledQuery: CompiledSelectQuery): Promise<QueryResult<R>> {
+  async #executeSelectQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
     const url = this.#resolveRequestUrl('query/tuples')
 
     const requestBody: SingleStoreDataApiQueryTuplesRequestBody = this.#createRequestBody(compiledQuery)

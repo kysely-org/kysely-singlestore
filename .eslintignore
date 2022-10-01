@@ -8,5 +8,7 @@ pnpm-lock.yaml
 README.md
 tsconfig.json
 tsup.config.ts
-dist-fix.js
-example/**/*
+scripts
+examples
+tests
+typings

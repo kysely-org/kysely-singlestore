@@ -48,11 +48,14 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
+      - name: Lint
+        run: pnpm run lint
+
       - name: Build
         run: pnpm run build
 
-      # - name: Run node tests
-      #   run: pnpm test
+      - name: Run node tests
+        run: pnpm test
 
       # - name: Run browser tests
       #   run: pnpm run test:browser
