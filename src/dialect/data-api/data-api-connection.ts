@@ -100,7 +100,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   #createRequestHeaders(): SingleStoreDataApiRequestHeaders & Record<string, string> {
     const decodedAuth = `${this.#config.username}:${this.#config.password}`
 
-    const auth = btoa?.(decodedAuth) || Buffer.from(decodedAuth).toString('base64')
+    const auth = typeof process === 'undefined' ? btoa(decodedAuth) : Buffer.from(decodedAuth).toString('base64')
 
     return {
       Authorization: `Basic ${auth}`,
