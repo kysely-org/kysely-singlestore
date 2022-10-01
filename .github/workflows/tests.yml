@@ -1,0 +1,62 @@
+name: Tests
+on:
+  pull_request:
+    branches: [master]
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+        deno-version: [1.19.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # - name: Install Deno ${{ matrix.deno-version }}
+      #   uses: denolib/setup-deno@v2
+      #   with:
+      #     deno-version: ${{ matrix.deno-version }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm i
+
+      # - name: Run node tests
+      #   run: pnpm test
+
+      # - name: Run browser tests
+      #   run: pnpm run test:browser
+
+      # - name: Run deno tests
+      #   run: pnpm run test:deno
+
+      - name: Run esm check
+        run: cd example/esm && npm i && npm start
+
+      - name: Run cjs check
+        run: cd example/cjs && npm i && npm start
