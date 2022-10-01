@@ -1,28 +1,25 @@
 import type {CompiledQuery, DatabaseConnection, QueryResult} from 'kysely'
 
-import {
-  isCompiledSelectQuery,
-  SinglestoreDataApiColumnMetadataStore,
-  type CompiledSelectQuery,
-} from '../../util/index.js'
-import {SinglestoreDataApiDatabaseError, SinglestoreDataApiStreamingNotSupportedError} from './data-api-errors.js'
+import {isCompiledSelectQuery, type CompiledSelectQuery} from '../../util/compiled-select-query.js'
+import {SingleStoreDataApiColumnMetadataStore} from '../../util/data-api-column-metadata-store.js'
+import {SingleStoreDataApiDatabaseError, SingleStoreDataApiStreamingNotSupportedError} from './data-api-errors.js'
 import type {
   FetchResponse,
-  SinglestoreDataApiDialectConfig,
-  SinglestoreDataApiExecRequestBody,
-  SinglestoreDataApiExecResponseBody,
-  SinglestoreDataApiQueryTuplesRequestBody,
-  SinglestoreDataApiQueryTuplesResponseBody,
-  SinglestoreDataApiRequestBody,
-  SinglestoreDataApiRequestHeaders,
+  SingleStoreDataApiDialectConfig,
+  SingleStoreDataApiExecRequestBody,
+  SingleStoreDataApiExecResponseBody,
+  SingleStoreDataApiQueryTuplesRequestBody,
+  SingleStoreDataApiQueryTuplesResponseBody,
+  SingleStoreDataApiRequestBody,
+  SingleStoreDataApiRequestHeaders,
 } from './types.js'
 
 const API_VERSION = 'v2'
 
-export class SinglestoreDataApiConnection implements DatabaseConnection {
-  readonly #config: SinglestoreDataApiDialectConfig
+export class SingleStoreDataApiConnection implements DatabaseConnection {
+  readonly #config: SingleStoreDataApiDialectConfig
 
-  constructor(config: SinglestoreDataApiDialectConfig) {
+  constructor(config: SingleStoreDataApiDialectConfig) {
     this.#config = {...config}
   }
 
@@ -35,24 +32,24 @@ export class SinglestoreDataApiConnection implements DatabaseConnection {
   }
 
   streamQuery(): never {
-    throw new SinglestoreDataApiStreamingNotSupportedError()
+    throw new SingleStoreDataApiStreamingNotSupportedError()
   }
 
   async #executeSelectQuery<R>(compiledQuery: CompiledSelectQuery): Promise<QueryResult<R>> {
     const url = this.#resolveRequestUrl('query/tuples')
 
-    const requestBody: SinglestoreDataApiQueryTuplesRequestBody = this.#createRequestBody(compiledQuery)
+    const requestBody: SingleStoreDataApiQueryTuplesRequestBody = this.#createRequestBody(compiledQuery)
 
-    const {error, results} = await this.#postJSON<SinglestoreDataApiQueryTuplesResponseBody<R>>(url, requestBody)
+    const {error, results} = await this.#postJSON<SingleStoreDataApiQueryTuplesResponseBody<R>>(url, requestBody)
 
     if (error) {
-      throw new SinglestoreDataApiDatabaseError(error.message, 400, error)
+      throw new SingleStoreDataApiDatabaseError(error.message, 400, error)
     }
 
     const [result] = results
 
-    if (SinglestoreDataApiColumnMetadataStore.enabled) {
-      SinglestoreDataApiColumnMetadataStore.getInstance().write(compiledQuery.sql, result.columns)
+    if (SingleStoreDataApiColumnMetadataStore.enabled) {
+      SingleStoreDataApiColumnMetadataStore.getInstance().write(compiledQuery.sql, result.columns)
     }
 
     return {
@@ -63,9 +60,9 @@ export class SinglestoreDataApiConnection implements DatabaseConnection {
   async #executeMutationQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
     const url = this.#resolveRequestUrl('exec')
 
-    const requestBody: SinglestoreDataApiExecRequestBody = this.#createRequestBody(compiledQuery)
+    const requestBody: SingleStoreDataApiExecRequestBody = this.#createRequestBody(compiledQuery)
 
-    const result = await this.#postJSON<SinglestoreDataApiExecResponseBody>(url, requestBody)
+    const result = await this.#postJSON<SingleStoreDataApiExecResponseBody>(url, requestBody)
 
     return {
       insertId: BigInt(result.lastInsertId),
@@ -78,7 +75,7 @@ export class SinglestoreDataApiConnection implements DatabaseConnection {
     return new URL(`/api/${API_VERSION}/${resource}`, `https://${this.#config.hostname}`)
   }
 
-  #createRequestBody(compiledQuery: CompiledQuery): SinglestoreDataApiRequestBody {
+  #createRequestBody(compiledQuery: CompiledQuery): SingleStoreDataApiRequestBody {
     return {
       args: compiledQuery.parameters,
       database: this.#config.database,
@@ -100,7 +97,7 @@ export class SinglestoreDataApiConnection implements DatabaseConnection {
     return await response.json()
   }
 
-  #createRequestHeaders(): SinglestoreDataApiRequestHeaders & Record<string, string> {
+  #createRequestHeaders(): SingleStoreDataApiRequestHeaders & Record<string, string> {
     const auth = btoa(`${this.#config.username}:${this.#config.password}`)
 
     return {
@@ -115,9 +112,9 @@ export class SinglestoreDataApiConnection implements DatabaseConnection {
     try {
       const {error: responseError} = await response.json()
 
-      error = new SinglestoreDataApiDatabaseError(response.statusText, response.status, responseError)
+      error = new SingleStoreDataApiDatabaseError(response.statusText, response.status, responseError)
     } catch {
-      error = new SinglestoreDataApiDatabaseError(response.statusText, response.status, {
+      error = new SingleStoreDataApiDatabaseError(response.statusText, response.status, {
         code: response.status,
         message: response.statusText,
       })

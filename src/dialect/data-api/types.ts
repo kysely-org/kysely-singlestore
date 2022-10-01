@@ -1,4 +1,4 @@
-export interface SinglestoreDataApiDialectConfig {
+export interface SingleStoreDataApiDialectConfig {
   database: string
   fetch: (input: string, init?: FetchRequest) => Promise<FetchResponse>
   hostname: string
@@ -20,44 +20,44 @@ export interface FetchResponse {
   text: () => Promise<string>
 }
 
-export interface SinglestoreDataApiRequestBody {
+export interface SingleStoreDataApiRequestBody {
   sql: string
   args: readonly unknown[]
   database: string
 }
 
-export interface SinglestoreDataApiRequestHeaders {
+export interface SingleStoreDataApiRequestHeaders {
   Authorization: `Basic ${string}`
   'Content-Type': 'application/json'
   [x: string]: string
 }
 
-export type SinglestoreDataApiExecRequestBody = SinglestoreDataApiRequestBody
+export type SingleStoreDataApiExecRequestBody = SingleStoreDataApiRequestBody
 
-export interface SinglestoreDataApiExecResponseBody {
+export interface SingleStoreDataApiExecResponseBody {
   lastInsertId: number
   rowsAffected: number
 }
 
-export type SinglestoreDataApiQueryTuplesRequestBody = SinglestoreDataApiRequestBody
+export type SingleStoreDataApiQueryTuplesRequestBody = SingleStoreDataApiRequestBody
 
-export interface SinglestoreDataApiQueryTuplesResponseBody<O> {
-  results: SinglestoreDataApiQueryTuplesResponseBodyResult<O>[]
-  error?: SinglestoreDataApiResponseBodyError
+export interface SingleStoreDataApiQueryTuplesResponseBody<O> {
+  results: SingleStoreDataApiQueryTuplesResponseBodyResult<O>[]
+  error?: SingleStoreDataApiResponseBodyError
 }
 
-export interface SinglestoreDataApiQueryTuplesResponseBodyResult<O> {
-  columns: SinglestoreDataApiColumnMetadata[]
+export interface SingleStoreDataApiQueryTuplesResponseBodyResult<O> {
+  columns: SingleStoreDataApiColumnMetadata[]
   rows: O[]
 }
 
-export interface SinglestoreDataApiColumnMetadata {
+export interface SingleStoreDataApiColumnMetadata {
   name: string
   dataType: string
   nullable: boolean
 }
 
-export interface SinglestoreDataApiResponseBodyError {
+export interface SingleStoreDataApiResponseBodyError {
   code: number
   message: string
 }

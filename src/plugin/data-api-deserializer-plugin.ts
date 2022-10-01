@@ -9,10 +9,11 @@ import {
   type UnknownRow,
 } from 'kysely'
 
-import type {SinglestoreDataApiColumnMetadata} from '../dialect/index.js'
-import {SinglestoreDataApiColumnMetadataStore, SinglestoreDataType} from '../util/index.js'
+import type {SingleStoreDataApiColumnMetadata} from '../dialect/data-api/types.js'
+import {SingleStoreDataApiColumnMetadataStore} from '../util/data-api-column-metadata-store.js'
+import {SingleStoreDataType} from '../util/singlestore-data-type.js'
 
-export interface SinglestoreDataApiDeserializerPluginConfig {
+export interface SingleStoreDataApiDeserializerPluginConfig {
   /**
    * Should cast `TINYINT` as `boolean`? otherwise keep as `number`.
    *
@@ -33,12 +34,12 @@ export interface SinglestoreDataApiDeserializerPluginConfig {
   unwrapDecimals?: boolean
 }
 
-export class SinglestoreDataApiDeserializerPlugin implements KyselyPlugin {
-  #columnMetadataStore: SinglestoreDataApiColumnMetadataStore | undefined
-  readonly #config: SinglestoreDataApiDeserializerPluginConfig
+export class SingleStoreDataApiDeserializerPlugin implements KyselyPlugin {
+  #columnMetadataStore: SingleStoreDataApiColumnMetadataStore | undefined
+  readonly #config: SingleStoreDataApiDeserializerPluginConfig
   readonly #rootOperationNodeDictionary: WeakMap<object, RootOperationNode>
 
-  constructor(config?: SinglestoreDataApiDeserializerPluginConfig) {
+  constructor(config?: SingleStoreDataApiDeserializerPluginConfig) {
     this.#config = {...config}
     this.#rootOperationNodeDictionary = new WeakMap()
   }
@@ -47,7 +48,7 @@ export class SinglestoreDataApiDeserializerPlugin implements KyselyPlugin {
     const {node} = args
 
     // lazy instantiation -- telling connection to start storing column metadata.
-    this.#columnMetadataStore = SinglestoreDataApiColumnMetadataStore.getInstance()
+    this.#columnMetadataStore = SingleStoreDataApiColumnMetadataStore.getInstance()
 
     this.#rootOperationNodeDictionary.set(args.queryId, node)
 
@@ -83,7 +84,7 @@ export class SinglestoreDataApiDeserializerPlugin implements KyselyPlugin {
     }
   }
 
-  #deserializeRow(row: UnknownRow, columnMetadata: ReadonlyArray<SinglestoreDataApiColumnMetadata>): UnknownRow {
+  #deserializeRow(row: UnknownRow, columnMetadata: ReadonlyArray<SingleStoreDataApiColumnMetadata>): UnknownRow {
     return columnMetadata.reduce((deserialized, columnMetadatum) => {
       const {name} = columnMetadatum
 
@@ -104,17 +105,17 @@ export class SinglestoreDataApiDeserializerPlugin implements KyselyPlugin {
     const impreciseDataType = this.#getImpreciseDataType(dataType)
 
     switch (impreciseDataType) {
-      case SinglestoreDataType.Bool:
-      case SinglestoreDataType.Boolean:
+      case SingleStoreDataType.Bool:
+      case SingleStoreDataType.Boolean:
         return Boolean(value)
-      case SinglestoreDataType.Date:
+      case SingleStoreDataType.Date:
         return new Date(`${value}T00:00:00.000Z`)
-      case SinglestoreDataType.Datetime:
-      case SinglestoreDataType.Timestamp:
+      case SingleStoreDataType.Datetime:
+      case SingleStoreDataType.Timestamp:
         return this.#deserializeDatetimeColumn(value, dataType)
-      case SinglestoreDataType.Decimal:
+      case SingleStoreDataType.Decimal:
         return this.#config.unwrapDecimals ? Number(value) : value
-      case SinglestoreDataType.TinyInt:
+      case SingleStoreDataType.TinyInt:
         return this.#config.castTinyIntAsBoolean ? Boolean(value) : value
       default:
         return value
@@ -127,11 +128,11 @@ export class SinglestoreDataApiDeserializerPlugin implements KyselyPlugin {
 
   #deserializeDatetimeColumn(value: unknown, dataType: string): unknown {
     switch (dataType) {
-      case SinglestoreDataType.Datetime:
-      case SinglestoreDataType.Timestamp:
+      case SingleStoreDataType.Datetime:
+      case SingleStoreDataType.Timestamp:
         return new Date(`${value}.000000Z`)
-      case `${SinglestoreDataType.Datetime}(6)`:
-      case `${SinglestoreDataType.Timestamp}(6)`:
+      case `${SingleStoreDataType.Datetime}(6)`:
+      case `${SingleStoreDataType.Timestamp}(6)`:
         return new Date(`${value}Z`)
       default:
         return value

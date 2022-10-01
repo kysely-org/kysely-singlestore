@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f759c07e4dd4f9889a21ea2a49d5a2e)](https://www.codacy.com/gh/igalklebanov/kysely-singlestore/dashboard?utm_source=github.com&utm_medium=referral&utm_content=igalklebanov/kysely-singlestore&utm_campaign=Badge_Grade)
 ![Powered by TypeScript](https://img.shields.io/badge/powered%20by-typescript-blue.svg)
 
-[Kysely](https://github.com/koskimas/kysely) dialects, plugins and other goodies for [Singlestore](https://www.singlestore.com/) (formerly MemSQL).
+[Kysely](https://github.com/koskimas/kysely) dialects, plugins and other goodies for [SingleStore](https://www.singlestore.com/) (formerly MemSQL).
 
 ## Installation
 
@@ -20,7 +20,7 @@ npm i kysely-singlestore kysely
 
 ```ts
 import {Kysely} from 'kysely'
-import {SinglestoreDataApiDeserializerPlugin, SinglestoreDataApiDialect, SinglestoreDataType} from 'kysely-singlestore'
+import {SingleStoreDataApiDeserializerPlugin, SingleStoreDataApiDialect, SingleStoreDataType} from 'kysely-singlestore'
 import {fetch} from 'undici'
 
 interface Database {
@@ -37,7 +37,7 @@ interface Database {
 }
 
 const db = new Kysely<Database>({
-  dialect: new SinglestoreDataApiDialect({
+  dialect: new SingleStoreDataApiDialect({
     database: '<database>',
     fetch,
     hostname: '<hostname>',
@@ -46,10 +46,10 @@ const db = new Kysely<Database>({
   }),
   plugins: [
     // optional deserializer (transform result values) plugin
-    new SinglestoreDataApiDeserializerPlugin({
+    new SingleStoreDataApiDeserializerPlugin({
       castTinyIntAsBoolean: true,
       deserializer: (value, dataType, columnName) =>
-        dataType === SinglestoreDataType.Json && columnName === 'pet' ? new Pet(value) : undefined,
+        dataType === SingleStoreDataType.Json && columnName === 'pet' ? new Pet(value) : undefined,
       unwrapDecimals: true,
     }),
   ],

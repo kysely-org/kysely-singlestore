@@ -1,38 +1,38 @@
-import type {SinglestoreDataApiResponseBodyError} from './types.js'
+import type {SingleStoreDataApiResponseBodyError} from './types.js'
 
-export class SinglestoreDataApiDatabaseError extends Error {
-  body: SinglestoreDataApiResponseBodyError
+export class SingleStoreDataApiDatabaseError extends Error {
+  body: SingleStoreDataApiResponseBodyError
   status: number
 
-  constructor(message: string, status: number, body: SinglestoreDataApiResponseBodyError) {
+  constructor(message: string, status: number, body: SingleStoreDataApiResponseBodyError) {
     super(message)
 
     this.body = body
-    this.name = 'SinglestoreDataApiDatabaseError'
+    this.name = 'SingleStoreDataApiDatabaseError'
     this.status = status
   }
 }
 
-export class SinglestoreDataApiLocksNotSupportedError extends Error {
+export class SingleStoreDataApiLocksNotSupportedError extends Error {
   constructor() {
-    super('Singlestore Data API does not support locks!')
+    super('SingleStore Data API does not support locks!')
 
-    this.name = 'SinglestoreDataApiLocksNotSupportedError'
+    this.name = 'SingleStoreDataApiLocksNotSupportedError'
   }
 }
 
-export class SinglestoreDataApiStreamingNotSupportedError extends Error {
+export class SingleStoreDataApiStreamingNotSupportedError extends Error {
   constructor() {
-    super('Singlestore Data API does not support streaming!')
+    super('SingleStore Data API does not support streaming!')
 
-    this.name = 'SinglestoreDataApiStreamingNotSupportedError'
+    this.name = 'SingleStoreDataApiStreamingNotSupportedError'
   }
 }
 
-export class SinglestoreDataApiTransactionsNotSupportedError extends Error {
+export class SingleStoreDataApiTransactionsNotSupportedError extends Error {
   constructor() {
-    super('Singlestore Data API does not support transactions!')
+    super('SingleStore Data API does not support transactions!')
 
-    this.name = 'SinglestoreDataApiTransactionsNotSupportedError'
+    this.name = 'SingleStoreDataApiTransactionsNotSupportedError'
   }
 }

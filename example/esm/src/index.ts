@@ -1,5 +1,5 @@
 import {Kysely} from 'kysely'
-import {SinglestoreDataApiDeserializerPlugin, SinglestoreDataApiDialect} from 'kysely-singlestore'
+import {SingleStoreDataApiDeserializerPlugin, SingleStoreDataApiDialect} from 'kysely-singlestore'
 import {fetch} from 'undici'
 
 interface Database {
@@ -17,7 +17,7 @@ interface Database {
 
 async function main(): Promise<void> {
   const db = new Kysely<Database>({
-    dialect: new SinglestoreDataApiDialect({
+    dialect: new SingleStoreDataApiDialect({
       database: '<database>',
       fetch,
       hostname: '<hostname>',
@@ -25,7 +25,7 @@ async function main(): Promise<void> {
       username: '<username>',
     }),
     plugins: [
-      new SinglestoreDataApiDeserializerPlugin({
+      new SingleStoreDataApiDeserializerPlugin({
         castTinyIntAsBoolean: true,
         unwrapDecimals: true,
       }),

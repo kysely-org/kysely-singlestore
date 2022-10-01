@@ -1,14 +1,14 @@
 import type {DatabaseConnection, Driver} from 'kysely'
+import {SingleStoreDataApiColumnMetadataStore} from '../../util/data-api-column-metadata-store.js'
 
-import {SinglestoreDataApiColumnMetadataStore} from '../../util/index.js'
-import {SinglestoreDataApiConnection} from './data-api-connection.js'
-import {SinglestoreDataApiTransactionsNotSupportedError} from './data-api-errors.js'
-import type {SinglestoreDataApiDialectConfig} from './types.js'
+import {SingleStoreDataApiConnection} from './data-api-connection.js'
+import {SingleStoreDataApiTransactionsNotSupportedError} from './data-api-errors.js'
+import type {SingleStoreDataApiDialectConfig} from './types.js'
 
-export class SinglestoreDataApiDriver implements Driver {
-  readonly #config: SinglestoreDataApiDialectConfig
+export class SingleStoreDataApiDriver implements Driver {
+  readonly #config: SingleStoreDataApiDialectConfig
 
-  constructor(config: SinglestoreDataApiDialectConfig) {
+  constructor(config: SingleStoreDataApiDialectConfig) {
     this.#config = {...config}
   }
 
@@ -17,7 +17,7 @@ export class SinglestoreDataApiDriver implements Driver {
   }
 
   async acquireConnection(): Promise<DatabaseConnection> {
-    return new SinglestoreDataApiConnection(this.#config)
+    return new SingleStoreDataApiConnection(this.#config)
   }
 
   async beginTransaction(): Promise<never> {
@@ -37,10 +37,10 @@ export class SinglestoreDataApiDriver implements Driver {
   }
 
   async destroy(): Promise<void> {
-    SinglestoreDataApiColumnMetadataStore.getInstance().destroy()
+    SingleStoreDataApiColumnMetadataStore.destroy()
   }
 
   #throwTransactionError(): never {
-    throw new SinglestoreDataApiTransactionsNotSupportedError()
+    throw new SingleStoreDataApiTransactionsNotSupportedError()
   }
 }

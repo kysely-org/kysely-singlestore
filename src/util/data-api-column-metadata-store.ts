@@ -1,4 +1,4 @@
-import type {SinglestoreDataApiColumnMetadata} from '../dialect/index.js'
+import type {SingleStoreDataApiColumnMetadata} from '../dialect/data-api/types.js'
 
 /**
  * Stores column metadata per query.
@@ -16,10 +16,10 @@ import type {SinglestoreDataApiColumnMetadata} from '../dialect/index.js'
  * look at your heapdumps after running all queries, and probably avoid using
  * `SinglestoreDataApiDeserializerPlugin` for now.
  */
-export class SinglestoreDataApiColumnMetadataStore {
-  static #instance: SinglestoreDataApiColumnMetadataStore
+export class SingleStoreDataApiColumnMetadataStore {
+  static #instance: SingleStoreDataApiColumnMetadataStore | undefined
   // #columnMetadataDictionary: WeakMap<object, SinglestoreDataApiColumnMetadata[]>
-  #columnMetadataDictionary: Record<string, ReadonlyArray<SinglestoreDataApiColumnMetadata>> | undefined
+  #columnMetadataDictionary: Record<string, ReadonlyArray<SingleStoreDataApiColumnMetadata>> | undefined
 
   private constructor() {
     // this.#columnMetadataDictionary = new WeakMap()
@@ -30,29 +30,29 @@ export class SinglestoreDataApiColumnMetadataStore {
     return this.#instance != null
   }
 
-  static getInstance(): SinglestoreDataApiColumnMetadataStore {
-    return (SinglestoreDataApiColumnMetadataStore.#instance ??= new SinglestoreDataApiColumnMetadataStore())
+  static getInstance(): SingleStoreDataApiColumnMetadataStore {
+    return (SingleStoreDataApiColumnMetadataStore.#instance ??= new SingleStoreDataApiColumnMetadataStore())
   }
 
   // delete(queryId: object): void {
   //   this.#columnMetadataDictionary.delete(queryId)
   // }
 
-  destroy(): void {
-    this.#columnMetadataDictionary = undefined
+  static destroy(): void {
+    SingleStoreDataApiColumnMetadataStore.#instance = undefined
   }
 
   // read(queryId: object): SinglestoreDataApiColumnMetadata[] | undefined {
   //   return this.#columnMetadataDictionary.get(queryId)
   // }
-  read(sql: string): ReadonlyArray<SinglestoreDataApiColumnMetadata> | undefined {
+  read(sql: string): ReadonlyArray<SingleStoreDataApiColumnMetadata> | undefined {
     return this.#columnMetadataDictionary?.[sql]
   }
 
   // write(queryId: object, columnMetadata: SinglestoreDataApiColumnMetadata[]): void {
   //   this.#columnMetadataDictionary.set(queryId, columnMetadata)
   // }
-  write(sql: string, columnMetadata: SinglestoreDataApiColumnMetadata[]): void {
+  write(sql: string, columnMetadata: SingleStoreDataApiColumnMetadata[]): void {
     if (this.#columnMetadataDictionary) {
       this.#columnMetadataDictionary[sql] = columnMetadata
     }

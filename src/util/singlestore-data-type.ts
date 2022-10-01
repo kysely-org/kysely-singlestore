@@ -1,7 +1,7 @@
 /**
  * @see https://docs.singlestore.com/managed-service/en/reference/data-api/data-api-data-type-conversion.html
  */
-export enum SinglestoreDataType {
+export enum SingleStoreDataType {
   BigInt = 'BIGINT',
   Binary = 'BINARY',
   Bit = 'BIT',

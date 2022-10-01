@@ -1,8 +1,8 @@
 import {DialectAdapterBase, type Kysely} from 'kysely'
 
-import {SinglestoreDataApiLocksNotSupportedError} from './data-api-errors.js'
+import {SingleStoreDataApiLocksNotSupportedError} from './data-api-errors.js'
 
-export class SinglestoreDataApiAdapter extends DialectAdapterBase {
+export class SingleStoreDataApiAdapter extends DialectAdapterBase {
   get supportsReturning(): boolean {
     return false
   }
@@ -20,6 +20,6 @@ export class SinglestoreDataApiAdapter extends DialectAdapterBase {
   }
 
   #throwLockError(): never {
-    throw new SinglestoreDataApiLocksNotSupportedError()
+    throw new SingleStoreDataApiLocksNotSupportedError()
   }
 }

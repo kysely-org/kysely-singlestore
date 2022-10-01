@@ -7,8 +7,6 @@ const path = require('node:path')
     rm(path.join(__dirname, 'dist', 'cjs'), {force: true, recursive: true}),
   ])
 
-  console.log('dist', dist)
-
   await Promise.all([
     mkdir(path.join(__dirname, 'dist', 'cjs')),
     writeFile(
