@@ -61,7 +61,7 @@ jobs:
       #   run: pnpm run test:deno
 
       - name: Run esm check
-        run: cd example/esm && npm i && npm start
+        run: cd examples/esm && npm i && npm start
 
       - name: Run cjs check
-        run: cd example/cjs && npm i && npm start
+        run: cd examples/cjs && npm i && npm start

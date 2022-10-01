@@ -9,7 +9,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-import: ^2.26.0
   eslint-plugin-prettier: ^4.2.1
-  kysely: ^0.21.6
+  kysely: ^0.22.0
   prettier: ^2.7.1
   prettier-plugin-organize-imports: ^3.1.1
   prettier-plugin-pkg: ^0.17.1
@@ -25,7 +25,7 @@ devDependencies:
   eslint-config-prettier: 8.5.0_eslint@8.24.0
   eslint-plugin-import: 2.26.0_2azyxy5wfmd73v3pbt5rvmgcsm
   eslint-plugin-prettier: 4.2.1_cfn5x6ujhhgzv3423d6k7r2zzm
-  kysely: 0.21.6
+  kysely: 0.22.0
   prettier: 2.7.1
   prettier-plugin-organize-imports: 3.1.1_igyrqqmkb7dgjptxnntravt2kq
   prettier-plugin-pkg: 0.17.1_prettier@2.7.1
@@ -1390,8 +1390,8 @@ packages:
       minimist: 1.2.6
     dev: true
 
-  /kysely/0.21.6:
-    resolution: {integrity: sha512-DNecGKzzYtx2OumPJ8inrVFsSfq1lNHLFZDJvXMQxqbrTFElqq70VLR3DiK0P9fw4pB+xXTYvLiLurWiYqgk3w==}
+  /kysely/0.22.0:
+    resolution: {integrity: sha512-ZE3qWtnqLOalodzfK5QUEcm7AEulhxsPNuKaGFsC3XiqO92vMLm+mAHk/NnbSIOtC4RmGm0nsv700i8KDp1gfQ==}
     engines: {node: '>=14.0.0'}
     dev: true
 
