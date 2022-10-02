@@ -29,13 +29,13 @@ jobs:
           SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
 
     steps:
-      - name: Sanity check using mysql client
-        run: |
-          mysql -u root -ptest -e "SELECT 1" -h 127.0.0.1
+      # - name: Sanity check using mysql client
+      #   run: |
+      #     mysql -u root -ptest -e "SELECT 1" -h 127.0.0.1
 
-      - name: Sanity check using curl
-        run: |
-          curl -s -XPOST -H "content-type: application/json" -d '{ "sql": "select 1" }' root:test@localhost:9000/api/v2/query/rows
+      # - name: Sanity check using curl
+      #   run: |
+      #     curl -s -XPOST -H "content-type: application/json" -d '{ "sql": "select 1" }' root:test@localhost:9000/api/v2/query/rows
 
       - name: Checkout
         uses: actions/checkout@v3
