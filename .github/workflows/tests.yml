@@ -35,8 +35,8 @@ jobs:
           SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
         run: docker run \
           -d --name singlestoredb-dev \
-          -e SINGLESTORE_LICENSE="$SINGLESTORE_LICENSE"
-          -e ROOT_PASSWORD="root"
+          -e SINGLESTORE_LICENSE="$SINGLESTORE_LICENSE" \
+          -e ROOT_PASSWORD="root" \
           -p 3306:3306 -p 8080:8080 -p 9000:9000 \
           ghcr.io/singlestore-labs/singlestoredb-dev
       # -v ${PWD}/tests/init.sql:/init.sql \
