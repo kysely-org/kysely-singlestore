@@ -31,9 +31,9 @@ jobs:
           - /$PWD/tests/init.sql:/init.sql
 
     steps:
-      # - name: Sanity check using mysql client
-      #   run: |
-      #     mysql -u root -ptest -e "SELECT 1" -h 127.0.0.1
+      - name: Sanity check using mysql client
+        run: |
+          mysql -u root -ptest -e "SELECT * FROM person" -h 127.0.0.1
 
       # - name: Sanity check using curl
       #   run: |
