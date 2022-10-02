@@ -8,7 +8,8 @@ CREATE ROWSTORE TABLE person (
     middle_name VARCHAR(255),
     last_name VARCHAR(255),
     age DOUBLE NOT NULL,
-    gender VARCHAR(6) NOT NULL
+    gender VARCHAR(6) NOT NULL,
+    SHARD KEY (id)
 );
 
 CREATE ROWSTORE TABLE pet (
@@ -16,6 +17,7 @@ CREATE ROWSTORE TABLE pet (
     name VARCHAR(255) NOT NULL UNIQUE,
     owner_id INTEGER UNSIGNED NOT NULL,
     species VARCHAR(7) NOT NULL,
+    SHARD KEY (id),
     KEY pet_owner_id_index (owner_id) USING HASH
 );
 
@@ -23,7 +25,9 @@ CREATE ROWSTORE TABLE toy (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price DECIMAL(13,4) UNSIGNED NOT NULL,
-    pet_id INTEGER UNSIGNED NOT NULL
+    pet_id INTEGER UNSIGNED NOT NULL,
+    SHARD KEY (id),
+    KEY toy_pet_id_index (pet_id) USING HASH
 );
 
 INSERT INTO person (id, first_name, last_name, gender, age)
