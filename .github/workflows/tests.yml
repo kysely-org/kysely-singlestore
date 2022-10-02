@@ -33,8 +33,7 @@ jobs:
       - name: Spin-up SingleStore image
         env:
           SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
-        run: |
-          docker run \
+        run: docker run \
           -d --name singlestoredb-dev \
           -e SINGLESTORE_LICENSE="$SINGLESTORE_LICENSE"
           -e ROOT_PASSWORD="root"
