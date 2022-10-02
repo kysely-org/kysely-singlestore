@@ -1,8 +1,9 @@
 import {expect} from 'chai'
 import {Kysely} from 'kysely'
+import nodeFetch from 'node-fetch'
+import {fetch as undiciFetch} from 'undici'
 
-import {SingleStoreDataApiDialect} from '../../src'
-import {getFetch} from './get-fetch'
+import {SingleStoreDataApiDialect} from '../..'
 
 type Database = {
   person: {
@@ -106,3 +107,19 @@ describe('SingleStoreDataApiConnection', () => {
     // TODO: ...
   })
 })
+
+export function getFetch() {
+  const {version} = process
+
+  console.log('version', version)
+
+  if (version.startsWith('v18')) {
+    return fetch
+  }
+
+  if (version.startsWith('v16')) {
+    return undiciFetch
+  }
+
+  return nodeFetch
+}
