@@ -17,7 +17,7 @@ CREATE ROWSTORE TABLE pet (
     name VARCHAR(255) NOT NULL UNIQUE,
     owner_id INTEGER UNSIGNED NOT NULL,
     species VARCHAR(7) NOT NULL,
-    SHARD KEY (id),
+    SHARD KEY (name),
     KEY pet_owner_id_index (owner_id) USING HASH
 );
 
