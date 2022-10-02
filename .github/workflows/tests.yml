@@ -17,29 +17,22 @@ jobs:
           ]
         # deno-version: [1.19.x]
 
-    # services:
-    #   singlestore:
-    #     image: ghcr.io/singlestore-labs/singlestoredb-dev:latest
-    #     ports:
-    #       - 3306:3306
-    #       - 8080:8080
-    #       - 9000:9000
-    #     env:
-    #       LICENSE_KEY: ${SINGLESTORE_LICENSE}
-    #       ROOT_PASSWORD: 'root'
-    #       START_AFTER_INIT: 'Y'
+    services:
+      singlestoredb:
+        image: ghcr.io/singlestore-labs/singlestoredb-dev
+        ports:
+          - 3306:3306
+          - 8080:8080
+          - 9000:9000
+        env:
+          ROOT_PASSWORD: test
+          SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
 
     steps:
-      - name: Spin-up SingleStore image
-        env:
-          SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
-        run: docker run \
-          -d --name singlestoredb-dev \
-          -e SINGLESTORE_LICENSE="${{ secrets.SINGLESTORE_LICENSE }}" \
-          -e ROOT_PASSWORD="root" \
-          -p 3306:3306 -p 8080:8080 -p 9000:9000 \
-          ghcr.io/singlestore-labs/singlestoredb-dev
-      # -v ${PWD}/tests/init.sql:/init.sql \
+      - name: sanity check using mysql client
+        run: |
+          mysql -u root -ptest -e "SELECT 1" -h 127.0.0.1
+
       - run: curl Https://localhost:9000/ping
 
       - name: Checkout
