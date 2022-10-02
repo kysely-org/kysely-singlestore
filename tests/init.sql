@@ -14,10 +14,10 @@ CREATE ROWSTORE TABLE person (
 
 CREATE ROWSTORE TABLE pet (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
     owner_id INTEGER UNSIGNED NOT NULL,
     species VARCHAR(7) NOT NULL,
-    SHARD KEY (name),
+    SHARD KEY (id),
     KEY pet_owner_id_index (owner_id) USING HASH
 );
 
