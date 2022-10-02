@@ -24,8 +24,6 @@ jobs:
         env:
           ROOT_PASSWORD: test
           SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
-        # volumes:
-        #   - ${GITHUB_WORKSPACE}/tests/init.sql:/init.sql
 
     steps:
       - name: Checkout
@@ -33,7 +31,7 @@ jobs:
 
       - name: Init SingleStore database
         run: |
-          mysql -u root -ptest -h 127.0.0.1 < /${GITHUB_WORKSPACE}/tests/init.sql
+          mysql -u root -ptest -h 127.0.0.1 < /${GITHUB_WORKSPACE}/scripts/init.sql
 
       - name: Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
