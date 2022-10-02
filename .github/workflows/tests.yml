@@ -28,7 +28,7 @@ jobs:
           ROOT_PASSWORD: test
           SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
         volumes:
-          - /$PWD/tests/init.sql:/init.sql
+          - $PWD/tests/init.sql:/init.sql
 
     steps:
       - name: Sanity check using mysql client
