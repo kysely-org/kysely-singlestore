@@ -10,11 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [
-            # 14.x, TODO: find solution for undici fetch is not a function.
-            16.x,
-            18.x,
-          ]
+        node-version: [14.x, 16.x, 18.x]
         # deno-version: [1.19.x]
 
     services:
