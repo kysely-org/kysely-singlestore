@@ -17,21 +17,34 @@ jobs:
           ]
         # deno-version: [1.19.x]
 
-    services:
-      singlestore:
-        image: singlestore/cluster-in-a-box:latest
-        ports:
-          - 3306:3306
-          - 8080:8080
-        env:
-          LICENSE_KEY: ${SINGLESTORE_LICENSE}
-          ROOT_PASSWORD: 'root'
-          START_AFTER_INIT: 'Y'
+    # services:
+    #   singlestore:
+    #     image: ghcr.io/singlestore-labs/singlestoredb-dev:latest
+    #     ports:
+    #       - 3306:3306
+    #       - 8080:8080
+    #       - 9000:9000
+    #     env:
+    #       LICENSE_KEY: ${SINGLESTORE_LICENSE}
+    #       ROOT_PASSWORD: 'root'
+    #       START_AFTER_INIT: 'Y'
 
     steps:
-      - run: curl Https://localhost:8080/ping
+      - name: Spin-up SingleStore image
+        env:
+          SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
+        run: |
+          docker run \
+          -d --name singlestoredb-dev \
+          -e SINGLESTORE_LICENSE="$SINGLESTORE_LICENSE"
+          -e ROOT_PASSWORD="root"
+          -p 3306:3306 -p 8080:8080 -p 9000:9000 \
+          ghcr.io/singlestore-labs/singlestoredb-dev
+      # -v ${PWD}/tests/init.sql:/init.sql \
+      - run: curl Https://localhost:9000/ping
 
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
