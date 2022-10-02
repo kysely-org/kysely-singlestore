@@ -13,7 +13,7 @@ type Database = {
   }
 }
 
-describe('SingleStoreDataApiConnection', () => {
+describe('SingleStoreDataApiDialect', () => {
   let db: Kysely<Database>
 
   before(() => {
