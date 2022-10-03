@@ -51,7 +51,7 @@ jobs:
         run: pnpm i
 
       - name: Spin up SingleStore
-        run: docker-compose run -d -e SINGLESTORE_LICENSE=${{ secrets.SINGLESTORE_LICENSE }} --service-ports singlestore
+        run: docker-compose run -e SINGLESTORE_LICENSE=${{ secrets.SINGLESTORE_LICENSE }} --service-ports singlestore
 
       - name: Build
         run: pnpm run build
