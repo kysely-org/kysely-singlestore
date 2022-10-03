@@ -20,8 +20,7 @@ describe('SingleStoreDataApiDialect', () => {
     db = new Kysely({
       dialect: new SingleStoreDataApiDialect({
         database: 'test',
-        // fetch: getFetch(),
-        fetch: nodeFetch,
+        fetch: getFetch(),
         hostname: 'localhost:9000',
         password: 'test',
         username: 'root',
