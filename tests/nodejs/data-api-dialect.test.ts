@@ -20,7 +20,8 @@ describe('SingleStoreDataApiDialect', () => {
     db = new Kysely({
       dialect: new SingleStoreDataApiDialect({
         database: 'test',
-        fetch: getFetch(),
+        // fetch: getFetch(),
+        fetch: nodeFetch,
         hostname: 'localhost:9000',
         password: 'test',
         username: 'root',
@@ -34,61 +35,6 @@ describe('SingleStoreDataApiDialect', () => {
 
       expect(people).to.be.an('array').with.length.greaterThan(0)
     })
-
-    // it('should execute raw select queries.', async () => {
-    //   const query = CompiledQuery.raw('select * from `person`')
-    //   const response: SingleStoreDataApiQueryTuplesResponseBody<{
-    //     id: number
-    //     first_name: string | null
-    //     last_name: string | null
-    //   }> = {
-    //     results: [
-    //       {
-    //         columns: [
-    //           {dataType: SingleStoreDataType.BigInt, name: 'id', nullable: false},
-    //           {dataType: SingleStoreDataType.Varchar, name: 'first_name', nullable: true},
-    //           {dataType: SingleStoreDataType.Varchar, name: 'last_name', nullable: true},
-    //         ],
-    //         rows: [
-    //           {id: 1, first_name: 'Jennifer', last_name: 'Aniston'},
-    //           {id: 3, first_name: 'Michael', last_name: 'Jordan'},
-    //         ],
-    //       },
-    //     ],
-    //   }
-
-    //   interceptQuerySuccess(interceptor, response)
-
-    //   const result = await connection.executeQuery(query)
-
-    //   expect(result).to.be.an('object')
-    //   expect(result.rows).to.deep.equal(response.results[0].rows)
-    // })
-
-    // it('should execute raw with...select queries.', async () => {
-    //   const query = CompiledQuery.raw('with zzz as (select 1) select * from zzz')
-    //   const response: SingleStoreDataApiQueryTuplesResponseBody<{1: number}> = {
-    //     results: [
-    //       {
-    //         columns: [
-    //           {
-    //             dataType: SingleStoreDataType.Int,
-    //             name: '1',
-    //             nullable: false,
-    //           },
-    //         ],
-    //         rows: [{1: 1}],
-    //       },
-    //     ],
-    //   }
-
-    //   interceptQuerySuccess(interceptor, response)
-
-    //   const result = await connection.executeQuery(query)
-
-    //   expect(result).to.be.an('object')
-    //   expect(result.rows).to.deep.equal(response.results[0].rows)
-    // })
   })
 
   describe.skip('insert queries', () => {
@@ -107,6 +53,61 @@ describe('SingleStoreDataApiDialect', () => {
     // TODO: ...
   })
 })
+
+// it('should execute raw select queries.', async () => {
+//   const query = CompiledQuery.raw('select * from `person`')
+//   const response: SingleStoreDataApiQueryTuplesResponseBody<{
+//     id: number
+//     first_name: string | null
+//     last_name: string | null
+//   }> = {
+//     results: [
+//       {
+//         columns: [
+//           {dataType: SingleStoreDataType.BigInt, name: 'id', nullable: false},
+//           {dataType: SingleStoreDataType.Varchar, name: 'first_name', nullable: true},
+//           {dataType: SingleStoreDataType.Varchar, name: 'last_name', nullable: true},
+//         ],
+//         rows: [
+//           {id: 1, first_name: 'Jennifer', last_name: 'Aniston'},
+//           {id: 3, first_name: 'Michael', last_name: 'Jordan'},
+//         ],
+//       },
+//     ],
+//   }
+
+//   interceptQuerySuccess(interceptor, response)
+
+//   const result = await connection.executeQuery(query)
+
+//   expect(result).to.be.an('object')
+//   expect(result.rows).to.deep.equal(response.results[0].rows)
+// })
+
+// it('should execute raw with...select queries.', async () => {
+//   const query = CompiledQuery.raw('with zzz as (select 1) select * from zzz')
+//   const response: SingleStoreDataApiQueryTuplesResponseBody<{1: number}> = {
+//     results: [
+//       {
+//         columns: [
+//           {
+//             dataType: SingleStoreDataType.Int,
+//             name: '1',
+//             nullable: false,
+//           },
+//         ],
+//         rows: [{1: 1}],
+//       },
+//     ],
+//   }
+
+//   interceptQuerySuccess(interceptor, response)
+
+//   const result = await connection.executeQuery(query)
+
+//   expect(result).to.be.an('object')
+//   expect(result.rows).to.deep.equal(response.results[0].rows)
+// })
 
 export function getFetch() {
   const {version} = process
