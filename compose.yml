@@ -1,0 +1,12 @@
+services:
+  singlestore:
+    image: ghcr.io/singlestore-labs/singlestoredb-dev
+    environment:
+      ROOT_PASSWORD: test
+      SINGLESTORE_LICENSE: <singlestore_license>
+    ports:
+      - '3306:3306'
+      - '8080:8080'
+      - '9000:9000'
+    volumes:
+      - ${PWD}/scripts/init.sql:/init.sql
