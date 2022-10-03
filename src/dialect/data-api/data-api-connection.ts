@@ -72,7 +72,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   }
 
   #resolveRequestUrl(resource: string): URL {
-    return new URL(`/api/${API_VERSION}/${resource}`, `https://${this.#config.hostname}`)
+    return new URL(`/api/${API_VERSION}/${resource}`, `http://${this.#config.hostname}`)
   }
 
   #createRequestBody(compiledQuery: CompiledQuery): SingleStoreDataApiRequestBody {
