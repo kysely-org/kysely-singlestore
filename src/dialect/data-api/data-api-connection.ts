@@ -97,7 +97,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     })
 
     if (!response.ok) {
-      this.#throwApiError(response)
+      await this.#throwApiError(response)
     }
 
     return await response.json()
