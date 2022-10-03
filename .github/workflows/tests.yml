@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, testing-singlestore-images]
+    branches: [main]
 jobs:
   run-tests:
     runs-on: ubuntu-latest
