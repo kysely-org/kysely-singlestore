@@ -18,9 +18,15 @@ const API_VERSION = 'v2'
 
 export class SingleStoreDataApiConnection implements DatabaseConnection {
   readonly #config: SingleStoreDataApiDialectConfig
+  readonly #basePath: string
 
   constructor(config: SingleStoreDataApiDialectConfig) {
     this.#config = {...config}
+
+    const {hostname} = this.#config
+    const protocol = hostname.startsWith('localhost') ? 'http' : 'https'
+
+    this.#basePath = `${protocol}://${hostname}`
   }
 
   async executeQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
@@ -72,7 +78,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   }
 
   #resolveRequestUrl(resource: string): URL {
-    return new URL(`/api/${API_VERSION}/${resource}`, `http://${this.#config.hostname}`)
+    return new URL(`/api/${API_VERSION}/${resource}`, this.#basePath)
   }
 
   #createRequestBody(compiledQuery: CompiledQuery): SingleStoreDataApiRequestBody {
