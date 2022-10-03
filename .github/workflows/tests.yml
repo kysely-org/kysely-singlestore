@@ -14,9 +14,24 @@ jobs:
         # deno-version: [1.19.x]
       fail-fast: false
 
+    services:
+      singlestore:
+        image: ghcr.io/singlestore-labs/singlestoredb-dev
+        ports:
+          - 3306:3306
+          - 8080:8080
+          - 9000:9000
+        env:
+          ROOT_PASSWORD: test
+          SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Init SingleStore test database
+        run: |
+          mysql -u root -ptest -h 127.0.0.1 < /${GITHUB_WORKSPACE}/scripts/init.sql
 
       - name: Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -49,9 +64,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm i
-
-      - name: Spin up SingleStore
-        run: docker-compose run -e SINGLESTORE_LICENSE=${{ secrets.SINGLESTORE_LICENSE }} --service-ports singlestore
 
       - name: Build
         run: pnpm run build
