@@ -53,6 +53,9 @@ jobs:
       - name: Spin up SingleStore
         run: docker-compose run -d -e SINGLESTORE_LICENSE=${{ secrets.SINGLESTORE_LICENSE }} --service-ports singlestore
 
+      - name: Build
+        run: pnpm run build
+
       - name: Run node tests
         run: pnpm test
 
@@ -64,9 +67,6 @@ jobs:
 
       - name: Lint
         run: pnpm run lint
-
-      - name: Build
-        run: pnpm run build
 
       - name: Run esm check
         run: cd examples/esm && npm i && npm start
