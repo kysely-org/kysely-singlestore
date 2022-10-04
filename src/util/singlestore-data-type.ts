@@ -1,5 +1,5 @@
 /**
- * @see https://docs.singlestore.com/managed-service/en/reference/data-api/data-api-data-type-conversion.html
+ * @see https://docs.singlestore.com/managed-service/en/reference/sql-reference/data-types.html
  */
 export enum SingleStoreDataType {
   BigInt = 'BIGINT',
@@ -11,9 +11,11 @@ export enum SingleStoreDataType {
   Char = 'CHAR',
   Date = 'DATE',
   Datetime = 'DATETIME',
+  Dec = 'DEC',
   Decimal = 'DECIMAL',
   Double = 'DOUBLE',
   Enum = 'ENUM',
+  Fixed = 'FIXED',
   Float = 'FLOAT',
   Geography = 'GEOGRAPHY',
   GeographyPoint = 'GEOGRAPHYPOINT',
@@ -25,6 +27,8 @@ export enum SingleStoreDataType {
   MediumBlob = 'MEDIUMBLOB',
   MediumInt = 'MEDIUMINT',
   MediumText = 'MEDIUMTEXT',
+  Numeric = 'NUMERIC',
+  Real = 'REAL',
   Set = 'SET',
   SmallInt = 'SMALLINT',
   Text = 'TEXT',
