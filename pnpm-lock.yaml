@@ -1,7 +1,6 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@florajs/sql-parser': ^2.0.0
   '@tsconfig/node14': ^1.0.3
   '@types/chai': ^4.3.3
   '@types/mocha': ^10.0.0
@@ -24,9 +23,6 @@ specifiers:
   tsup: ^6.2.3
   typescript: ^4.8.3
   undici: ^5.10.0
-
-dependencies:
-  '@florajs/sql-parser': 2.0.0
 
 devDependencies:
   '@tsconfig/node14': 1.0.3
@@ -88,19 +84,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
-
-  /@florajs/errors/3.0.0:
-    resolution: {integrity: sha512-ODScaODSQ0TkMZ5gUut/E9+ZkwMNs5ZDSgTf98MWw1iMmPe8rQ+Q6VqWi7Jd0ZXJniwOh9TgWgzV4Co3z/0N4A==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /@florajs/sql-parser/2.0.0:
-    resolution: {integrity: sha512-+2pNP0AGoMv5tIEREt+p+phqXYRglyK2nf6oImculSJ/K3gbe4OX9UtJ4aFBWfIV6XOL8sfiUYZS2vsx16Zu+Q==}
-    engines: {node: '>=12'}
-    dependencies:
-      '@florajs/errors': 3.0.0
-      has: 1.0.3
-    dev: false
 
   /@humanwhocodes/config-array/0.10.5:
     resolution: {integrity: sha512-XVVDtp+dVvRxMoxSiSfasYaG02VEe1qH5cKgMQJWhol6HwzbcqoCMJi8dAGoYAO57jhUyhI6cWuRiTcRaDaYug==}
