@@ -1,9 +1,12 @@
-import {expect} from 'chai'
+import {expect, use} from 'chai'
+import chaiAsPromised from 'chai-as-promised'
 import {Kysely, sql, type ColumnType, type GeneratedAlways} from 'kysely'
 import nodeFetch from 'node-fetch'
 import {fetch as undiciFetch} from 'undici'
 
-import {SingleStoreDataApiDialect} from '../../src/dialect/data-api/data-api-dialect'
+import {SingleStoreDataApiDialect, SingleStoreDataApiMultipleStatementsNotSupportedError} from '../../src'
+
+use(chaiAsPromised)
 
 interface Database {
   person: Person
@@ -47,6 +50,12 @@ describe('SingleStoreDataApiDialect', () => {
         username: 'root',
       }),
     })
+  })
+
+  it('should throw an exception when asked to execute a multi-statement query.', async () => {
+    await expect(sql`select 1; select 2`.execute(db)).to.be.rejectedWith(
+      SingleStoreDataApiMultipleStatementsNotSupportedError,
+    )
   })
 
   describe('select queries', () => {
@@ -143,12 +152,50 @@ describe('SingleStoreDataApiDialect', () => {
     })
   })
 
-  describe.skip('update queries', () => {
-    // TODO: ...
+  describe('update queries', () => {
+    it('should execute update queries.', async () => {
+      const doggo = await db.selectFrom('pet').where('name', '=', 'Doggo').select('id').executeTakeFirst()
+
+      expect(doggo).to.not.be.undefined
+
+      const result = await db
+        .updateTable('toy')
+        .set({
+          price: sql`${sql.ref('price')} + 1`,
+        })
+        .where('pet_id', '=', doggo!.id)
+        .executeTakeFirst()
+
+      expect(result.numUpdatedRows).to.equal(1n)
+    })
+
+    it.skip('should execute raw update queries.', async () => {
+      // TODO: ...
+    })
+
+    it.skip('should execute raw with...update queries.', async () => {
+      // TODO: ...
+    })
   })
 
-  describe.skip('delete queries', () => {
-    // TODO: ...
+  describe('delete queries', () => {
+    it('should execute delete queries.', async () => {
+      const doggo = await db.selectFrom('pet').where('name', '=', 'Doggo').select('id').executeTakeFirst()
+
+      expect(doggo).to.not.be.undefined
+
+      const result = await db.deleteFrom('toy').where('pet_id', '=', doggo!.id).executeTakeFirst()
+
+      expect(result.numDeletedRows).to.equal(1n)
+    })
+
+    it.skip('should execute raw delete queries.', async () => {
+      // TODO: ...
+    })
+
+    it.skip('should execute raw with...delete queries.', async () => {
+      // TODO: ...
+    })
   })
 
   describe.skip('ddl queries', () => {
@@ -158,8 +205,6 @@ describe('SingleStoreDataApiDialect', () => {
 
 export function getFetch() {
   const {version} = process
-
-  console.log('version', version)
 
   if (version.startsWith('v18')) {
     return fetch
