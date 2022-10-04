@@ -1,5 +1,5 @@
 import {Kysely} from 'kysely'
-import {SingleStoreDataApiDeserializerPlugin, SingleStoreDataApiDialect} from 'kysely-singlestore'
+import {SingleStoreDataApiDialect} from 'kysely-singlestore'
 import {fetch} from 'undici'
 
 interface Database {
@@ -24,12 +24,6 @@ async function main(): Promise<void> {
       password: '<password>',
       username: '<username>',
     }),
-    plugins: [
-      new SingleStoreDataApiDeserializerPlugin({
-        castTinyIntAsBoolean: true,
-        unwrapDecimals: true,
-      }),
-    ],
   })
 
   const compiledQuery = db.selectFrom('person').selectAll().where('id', '=', '<person_id>').compile()
