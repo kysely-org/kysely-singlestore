@@ -1,7 +1,11 @@
 import type {CompiledQuery, DatabaseConnection, QueryResult} from 'kysely'
 
 import {isSelectQuery} from '../../util/is-select-query.js'
-import {SingleStoreDataApiDatabaseError, SingleStoreDataApiStreamingNotSupportedError} from './data-api-errors.js'
+import {
+  SingleStoreDataApiDatabaseError,
+  SingleStoreDataApiMultipleStatementsNotSupportedError,
+  SingleStoreDataApiStreamingNotSupportedError,
+} from './data-api-errors.js'
 import {SingleStoreDataApiResultDeserializer} from './data-api-result-deserializer.js'
 import type {
   FetchResponse,
@@ -33,6 +37,8 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   }
 
   async executeQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
+    this.#assertSingleStatementQuery(compiledQuery)
+
     if (isSelectQuery(compiledQuery)) {
       return await this.#executeSelectQuery(compiledQuery)
     }
@@ -49,6 +55,12 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     const protocol = hostname.startsWith('localhost') ? 'http' : 'https'
 
     return `${protocol}://${hostname}`
+  }
+
+  #assertSingleStatementQuery(compiledQuery: CompiledQuery): void {
+    if (compiledQuery.sql.trim().match(/;.+/i)) {
+      throw new SingleStoreDataApiMultipleStatementsNotSupportedError()
+    }
   }
 
   async #executeSelectQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {

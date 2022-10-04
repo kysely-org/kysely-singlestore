@@ -21,6 +21,14 @@ export class SingleStoreDataApiLocksNotSupportedError extends Error {
   }
 }
 
+export class SingleStoreDataApiMultipleStatementsNotSupportedError extends Error {
+  constructor() {
+    super('SingleStore Data API does not support multiple statements!')
+
+    this.name = 'SingleStoreDataApiMultipleStatementsNotSupportedError'
+  }
+}
+
 export class SingleStoreDataApiStreamingNotSupportedError extends Error {
   constructor() {
     super('SingleStore Data API does not support streaming!')
