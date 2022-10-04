@@ -10,15 +10,28 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [
-            # 14.x, TODO: find solution for undici fetch is not a function.
-            16.x,
-            18.x,
-          ]
+        node-version: [14.x, 16.x, 18.x]
         # deno-version: [1.19.x]
+      fail-fast: false
+
+    services:
+      singlestore:
+        image: ghcr.io/singlestore-labs/singlestoredb-dev
+        ports:
+          - 3306:3306
+          - 8080:8080
+          - 9000:9000
+        env:
+          ROOT_PASSWORD: test
+          SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Init SingleStore test database
+        run: |
+          mysql -u root -ptest -h 127.0.0.1 < /${GITHUB_WORKSPACE}/scripts/init.sql
 
       - name: Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -52,9 +65,6 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Lint
-        run: pnpm run lint
-
       - name: Build
         run: pnpm run build
 
@@ -66,6 +76,9 @@ jobs:
 
       # - name: Run deno tests
       #   run: pnpm run test:deno
+
+      - name: Lint
+        run: pnpm run lint
 
       - name: Run esm check
         run: cd examples/esm && npm i && npm start

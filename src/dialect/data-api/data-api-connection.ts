@@ -1,26 +1,35 @@
 import type {CompiledQuery, DatabaseConnection, QueryResult} from 'kysely'
 
-import {SingleStoreDataApiColumnMetadataStore} from '../../util/data-api-column-metadata-store.js'
 import {isSelectQuery} from '../../util/is-select-query.js'
 import {SingleStoreDataApiDatabaseError, SingleStoreDataApiStreamingNotSupportedError} from './data-api-errors.js'
+import {SingleStoreDataApiResultDeserializer} from './data-api-result-deserializer.js'
 import type {
   FetchResponse,
   SingleStoreDataApiDialectConfig,
-  SingleStoreDataApiExecRequestBody,
   SingleStoreDataApiExecResponseBody,
-  SingleStoreDataApiQueryTuplesRequestBody,
   SingleStoreDataApiQueryTuplesResponseBody,
   SingleStoreDataApiRequestBody,
   SingleStoreDataApiRequestHeaders,
 } from './types.js'
 
-const API_VERSION = 'v2'
-
+/**
+ * @internal
+ */
 export class SingleStoreDataApiConnection implements DatabaseConnection {
+  readonly #basePath: string
   readonly #config: SingleStoreDataApiDialectConfig
+  readonly #requestHeaders: SingleStoreDataApiRequestHeaders
+  readonly #resultDeserializer: SingleStoreDataApiResultDeserializer
 
-  constructor(config: SingleStoreDataApiDialectConfig) {
+  constructor(
+    config: SingleStoreDataApiDialectConfig,
+    headers: SingleStoreDataApiRequestHeaders,
+    resultDeserializer: SingleStoreDataApiResultDeserializer,
+  ) {
     this.#config = {...config}
+    this.#basePath = this.#resolveBasePath()
+    this.#requestHeaders = headers
+    this.#resultDeserializer = resultDeserializer
   }
 
   async executeQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
@@ -35,12 +44,18 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     throw new SingleStoreDataApiStreamingNotSupportedError()
   }
 
-  async #executeSelectQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
-    const url = this.#resolveRequestUrl('query/tuples')
+  #resolveBasePath(): string {
+    const {hostname} = this.#config
+    const protocol = hostname.startsWith('localhost') ? 'http' : 'https'
 
-    const requestBody: SingleStoreDataApiQueryTuplesRequestBody = this.#createRequestBody(compiledQuery)
+    return `${protocol}://${hostname}`
+  }
 
-    const {error, results} = await this.#postJSON<SingleStoreDataApiQueryTuplesResponseBody<R>>(url, requestBody)
+  async #executeSelectQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {
+    const {error, results} = await this.#sendPostRequest<SingleStoreDataApiQueryTuplesResponseBody>(
+      'query/tuples',
+      compiledQuery,
+    )
 
     if (error) {
       throw new SingleStoreDataApiDatabaseError(error.message, 400, error)
@@ -48,21 +63,11 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
 
     const [result] = results
 
-    if (SingleStoreDataApiColumnMetadataStore.enabled) {
-      SingleStoreDataApiColumnMetadataStore.getInstance().write(compiledQuery.sql, result.columns)
-    }
-
-    return {
-      rows: result.rows,
-    }
+    return this.#resultDeserializer.deserializeResult<O>(result)
   }
 
-  async #executeMutationQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
-    const url = this.#resolveRequestUrl('exec')
-
-    const requestBody: SingleStoreDataApiExecRequestBody = this.#createRequestBody(compiledQuery)
-
-    const result = await this.#postJSON<SingleStoreDataApiExecResponseBody>(url, requestBody)
+  async #executeMutationQuery(compiledQuery: CompiledQuery): Promise<QueryResult<never>> {
+    const result = await this.#sendPostRequest<SingleStoreDataApiExecResponseBody>('exec', compiledQuery)
 
     return {
       insertId: BigInt(result.lastInsertId),
@@ -72,7 +77,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   }
 
   #resolveRequestUrl(resource: string): URL {
-    return new URL(`/api/${API_VERSION}/${resource}`, `https://${this.#config.hostname}`)
+    return new URL(`/api/v2/${resource}`, this.#basePath)
   }
 
   #createRequestBody(compiledQuery: CompiledQuery): SingleStoreDataApiRequestBody {
@@ -83,45 +88,34 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     }
   }
 
-  async #postJSON<R>(url: URL, body = {}): Promise<R> {
-    const response = await this.#config.fetch(url.toString(), {
+  async #sendPostRequest<R>(resource: string, compiledQuery: CompiledQuery): Promise<R> {
+    const requestBody = this.#createRequestBody(compiledQuery)
+
+    const url = this.#resolveRequestUrl(resource).toString()
+
+    const response = await this.#config.fetch(url, {
       method: 'POST',
-      body: JSON.stringify(body),
-      headers: this.#createRequestHeaders(),
+      body: JSON.stringify(requestBody),
+      headers: this.#requestHeaders,
     })
 
     if (!response.ok) {
-      this.#throwApiError(response)
+      await this.#throwApiError(response)
     }
 
     return await response.json()
   }
 
-  #createRequestHeaders(): SingleStoreDataApiRequestHeaders & Record<string, string> {
-    const decodedAuth = `${this.#config.username}:${this.#config.password}`
-
-    const auth = typeof process === 'undefined' ? btoa(decodedAuth) : Buffer.from(decodedAuth).toString('base64')
-
-    return {
-      Authorization: `Basic ${auth}`,
-      'Content-Type': 'application/json',
-    }
-  }
-
   async #throwApiError(response: FetchResponse): Promise<never> {
-    let error = null
+    let body = {
+      code: response.status,
+      message: response.statusText,
+    }
 
     try {
-      const {error: responseError} = await response.json()
+      ;({error: body} = await response.json())
+    } catch {}
 
-      error = new SingleStoreDataApiDatabaseError(response.statusText, response.status, responseError)
-    } catch {
-      error = new SingleStoreDataApiDatabaseError(response.statusText, response.status, {
-        code: response.status,
-        message: response.statusText,
-      })
-    }
-
-    throw error
+    throw new SingleStoreDataApiDatabaseError(response.statusText, response.status, body)
   }
 }

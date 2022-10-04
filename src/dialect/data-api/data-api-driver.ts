@@ -1,15 +1,20 @@
 import type {DatabaseConnection, Driver} from 'kysely'
-import {SingleStoreDataApiColumnMetadataStore} from '../../util/data-api-column-metadata-store.js'
 
+import {encodeToBase64} from '../../util/encode-to-base64.js'
 import {SingleStoreDataApiConnection} from './data-api-connection.js'
 import {SingleStoreDataApiTransactionsNotSupportedError} from './data-api-errors.js'
-import type {SingleStoreDataApiDialectConfig} from './types.js'
+import {SingleStoreDataApiResultDeserializer} from './data-api-result-deserializer.js'
+import type {SingleStoreDataApiDialectConfig, SingleStoreDataApiRequestHeaders} from './types.js'
 
 export class SingleStoreDataApiDriver implements Driver {
   readonly #config: SingleStoreDataApiDialectConfig
+  readonly #requestHeaders: SingleStoreDataApiRequestHeaders
+  readonly #resultDeserializer: SingleStoreDataApiResultDeserializer
 
   constructor(config: SingleStoreDataApiDialectConfig) {
     this.#config = {...config}
+    this.#requestHeaders = this.#createRequestHeaders()
+    this.#resultDeserializer = new SingleStoreDataApiResultDeserializer(this.#config.deserialization)
   }
 
   async init(): Promise<void> {
@@ -17,7 +22,7 @@ export class SingleStoreDataApiDriver implements Driver {
   }
 
   async acquireConnection(): Promise<DatabaseConnection> {
-    return new SingleStoreDataApiConnection(this.#config)
+    return new SingleStoreDataApiConnection(this.#config, this.#requestHeaders, this.#resultDeserializer)
   }
 
   async beginTransaction(): Promise<never> {
@@ -37,7 +42,18 @@ export class SingleStoreDataApiDriver implements Driver {
   }
 
   async destroy(): Promise<void> {
-    SingleStoreDataApiColumnMetadataStore.destroy()
+    // noop
+  }
+
+  #createRequestHeaders(): SingleStoreDataApiRequestHeaders & Record<string, string> {
+    const decodedAuth = `${this.#config.username}:${this.#config.password}`
+
+    const auth = encodeToBase64(decodedAuth)
+
+    return {
+      Authorization: `Basic ${auth}`,
+      'Content-Type': 'application/json',
+    }
   }
 
   #throwTransactionError(): never {

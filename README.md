@@ -18,9 +18,11 @@ npm i kysely-singlestore kysely
 
 ## Usage
 
+### Data API Dialect
+
 ```ts
 import {Kysely} from 'kysely'
-import {SingleStoreDataApiDeserializerPlugin, SingleStoreDataApiDialect, SingleStoreDataType} from 'kysely-singlestore'
+import {SingleStoreDataApiDialect, SingleStoreDataType} from 'kysely-singlestore'
 import {fetch} from 'undici'
 
 interface Database {
@@ -39,20 +41,18 @@ interface Database {
 const db = new Kysely<Database>({
   dialect: new SingleStoreDataApiDialect({
     database: '<database>',
+    deserialization: {
+      castDatesAsNativeDates: true,
+      castTinyIntAsBoolean: true,
+      deserialize: (value, dataType, columnName) =>
+        dataType === SingleStoreDataType.Json && columnName === 'pet' ? new Pet(value) : undefined,
+      unwrapDecimals: true,
+    },
     fetch,
     hostname: '<hostname>',
     password: '<password>',
     username: '<username>',
   }),
-  plugins: [
-    // optional deserializer (transform result values) plugin
-    new SingleStoreDataApiDeserializerPlugin({
-      castTinyIntAsBoolean: true,
-      deserializer: (value, dataType, columnName) =>
-        dataType === SingleStoreDataType.Json && columnName === 'pet' ? new Pet(value) : undefined,
-      unwrapDecimals: true,
-    }),
-  ],
 })
 ```
 

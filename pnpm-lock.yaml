@@ -17,6 +17,7 @@ specifiers:
   eslint-plugin-prettier: ^4.2.1
   kysely: ^0.22.0
   mocha: ^10.0.0
+  node-fetch: ^2
   prettier: ^2.7.1
   prettier-plugin-organize-imports: ^3.1.1
   prettier-plugin-pkg: ^0.17.1
@@ -43,6 +44,7 @@ devDependencies:
   eslint-plugin-prettier: 4.2.1_cfn5x6ujhhgzv3423d6k7r2zzm
   kysely: 0.22.0
   mocha: 10.0.0
+  node-fetch: 2.6.7
   prettier: 2.7.1
   prettier-plugin-organize-imports: 3.1.1_igyrqqmkb7dgjptxnntravt2kq
   prettier-plugin-pkg: 0.17.1_prettier@2.7.1
@@ -90,6 +92,7 @@ packages:
   /@florajs/errors/3.0.0:
     resolution: {integrity: sha512-ODScaODSQ0TkMZ5gUut/E9+ZkwMNs5ZDSgTf98MWw1iMmPe8rQ+Q6VqWi7Jd0ZXJniwOh9TgWgzV4Co3z/0N4A==}
     engines: {node: '>=12'}
+    dev: false
 
   /@florajs/sql-parser/2.0.0:
     resolution: {integrity: sha512-+2pNP0AGoMv5tIEREt+p+phqXYRglyK2nf6oImculSJ/K3gbe4OX9UtJ4aFBWfIV6XOL8sfiUYZS2vsx16Zu+Q==}
@@ -1739,6 +1742,18 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
+  /node-fetch/2.6.7:
+    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: true
+
   /normalize-path/3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
@@ -2188,6 +2203,10 @@ packages:
       is-number: 7.0.0
     dev: true
 
+  /tr46/0.0.3:
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+    dev: true
+
   /tr46/1.0.1:
     resolution: {integrity: sha512-dTpowEjclQ7Kgx5SdBkqRzVhERQXov8/l9Ft9dVM9fmg0W0KQSVaXX9T4i6twCPNtYiZM53lpSSUAwJbFPOHxA==}
     dependencies:
@@ -2309,8 +2328,19 @@ packages:
       punycode: 2.1.1
     dev: true
 
+  /webidl-conversions/3.0.1:
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+    dev: true
+
   /webidl-conversions/4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
+    dev: true
+
+  /whatwg-url/5.0.0:
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
     dev: true
 
   /whatwg-url/7.1.0:
