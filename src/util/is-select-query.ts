@@ -1,4 +1,3 @@
-import {parse} from '@florajs/sql-parser/build/pegjs-parser.js'
 import {RawNode, SelectQueryNode, type CompiledQuery} from 'kysely'
 
 /**
@@ -12,41 +11,45 @@ import {RawNode, SelectQueryNode, type CompiledQuery} from 'kysely'
  * root node is a `SelectQueryNode` when the consumer uses `db.selectFrom(table)`
  * or `db.with(...).selectFrom(table)`.
  *
- * It gets complicated when the consumer uses raw sql. The compiled query's root
+ * Things gets complicated when the consumer uses raw sql. In such cases, the compiled query's root
  * node is a `RawNode`, so we have no indication if its a select query.
  * If the first keyword is `select` or `explain`, easy. Else, if the first
- * keyword is `with` we need to parse the raw sql to ensure it is not
- * `with...update` or `with...delete`. Parsing sql is not that simple, so
- * we've sourced it to an external package for now (we might end up extending
- * it to provide SingleStore specific syntax support).
+ * keyword is `with`, we need to ensure it is not `with...delete`, `with...insert`, `with...replace` or `with...update`.
  */
 export function isSelectQuery(compiledQuery: CompiledQuery): boolean {
-  const {query, sql} = compiledQuery
+  return SelectQueryNode.is(compiledQuery.query) || isRawSelectQuery(compiledQuery)
+}
 
-  if (SelectQueryNode.is(query)) {
-    return true
-  }
-
-  if (!RawNode.is(query)) {
+function isRawSelectQuery(compiledQuery: CompiledQuery): boolean {
+  if (!RawNode.is(compiledQuery.query)) {
     return false
   }
 
-  const trimmedSql = sql.trim()
+  return compiledQuery.sql.match(/^\s*(\(?select|explain)/i) != null || isRawWithSelectQuery(compiledQuery)
+}
 
-  if (trimmedSql.match(/^\(*(select|explain)/i)) {
-    return true
-  }
+function isRawWithSelectQuery(compiledQuery: CompiledQuery): boolean {
+  const sql = compiledQuery.sql.trim()
 
-  if (!trimmedSql.match(/^with/i)) {
+  if (!sql.match(/^with/i)) {
     return false
   }
 
-  try {
-    // @florajs/sql-parser's pegjs parser only supports select parsing.
-    parse(trimmedSql)
+  const OR = '|'
+  const SENTENCE = '+[\\w\\W]+'
+  const SPACE = '+\\s+'
+  const SPECIAL = `(;|'|"|\`|\\'|\\"|\\\\|\\-\\-|\\/\\*|[\\(\\)])`
+  const wrapKeyword = (keyword: string): string => '(' + SPECIAL + keyword + OR + SPECIAL + SPACE + keyword + ')'
 
-    return true
-  } catch (error) {
-    return false
-  }
+  const notSelectRegExp = new RegExp(
+    [
+      wrapKeyword('delete') + SPACE + 'from',
+      wrapKeyword('insert') + SPACE + 'into',
+      wrapKeyword('replace') + SPACE + 'into',
+      wrapKeyword('update') + SENTENCE + 'set',
+    ].join(OR),
+    'i',
+  )
+
+  return !sql.match(notSelectRegExp)
 }
