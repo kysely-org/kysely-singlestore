@@ -11,4 +11,3 @@ tsup.config.ts
 scripts
 examples
 tests
-typings

@@ -39,17 +39,16 @@
   "peerDependencies": {
     "kysely": ">= 0.7.8 < 1"
   },
-  "dependencies": {
-    "@florajs/sql-parser": "^2.0.0"
-  },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",
     "@types/chai": "^4.3.3",
+    "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^10.0.0",
     "@types/node": "^16",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "chai": "^4.3.6",
+    "chai-as-promised": "^7.1.1",
     "esbuild": "^0.15.10",
     "esbuild-runner": "^2.2.1",
     "eslint": "^8.24.0",

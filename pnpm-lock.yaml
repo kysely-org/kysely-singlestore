@@ -1,14 +1,15 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@florajs/sql-parser': ^2.0.0
   '@tsconfig/node14': ^1.0.3
   '@types/chai': ^4.3.3
+  '@types/chai-as-promised': ^7.1.5
   '@types/mocha': ^10.0.0
   '@types/node': ^16
   '@typescript-eslint/eslint-plugin': ^5.38.0
   '@typescript-eslint/parser': ^5.38.0
   chai: ^4.3.6
+  chai-as-promised: ^7.1.1
   esbuild: ^0.15.10
   esbuild-runner: ^2.2.1
   eslint: ^8.24.0
@@ -25,17 +26,16 @@ specifiers:
   typescript: ^4.8.3
   undici: ^5.10.0
 
-dependencies:
-  '@florajs/sql-parser': 2.0.0
-
 devDependencies:
   '@tsconfig/node14': 1.0.3
   '@types/chai': 4.3.3
+  '@types/chai-as-promised': 7.1.5
   '@types/mocha': 10.0.0
   '@types/node': 16.11.60
   '@typescript-eslint/eslint-plugin': 5.38.0_4gkcvl6qsi23tqqawfqgcwtp54
   '@typescript-eslint/parser': 5.38.0_7ilbxdl5iguzcjriqqcg2m5cku
   chai: 4.3.6
+  chai-as-promised: 7.1.1_chai@4.3.6
   esbuild: 0.15.10
   esbuild-runner: 2.2.1_esbuild@0.15.10
   eslint: 8.24.0
@@ -89,19 +89,6 @@ packages:
       - supports-color
     dev: true
 
-  /@florajs/errors/3.0.0:
-    resolution: {integrity: sha512-ODScaODSQ0TkMZ5gUut/E9+ZkwMNs5ZDSgTf98MWw1iMmPe8rQ+Q6VqWi7Jd0ZXJniwOh9TgWgzV4Co3z/0N4A==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /@florajs/sql-parser/2.0.0:
-    resolution: {integrity: sha512-+2pNP0AGoMv5tIEREt+p+phqXYRglyK2nf6oImculSJ/K3gbe4OX9UtJ4aFBWfIV6XOL8sfiUYZS2vsx16Zu+Q==}
-    engines: {node: '>=12'}
-    dependencies:
-      '@florajs/errors': 3.0.0
-      has: 1.0.3
-    dev: false
-
   /@humanwhocodes/config-array/0.10.5:
     resolution: {integrity: sha512-XVVDtp+dVvRxMoxSiSfasYaG02VEe1qH5cKgMQJWhol6HwzbcqoCMJi8dAGoYAO57jhUyhI6cWuRiTcRaDaYug==}
     engines: {node: '>=10.10.0'}
@@ -149,6 +136,12 @@ packages:
 
   /@tsconfig/node14/1.0.3:
     resolution: {integrity: sha512-ysT8mhdixWK6Hw3i1V2AeRqZ5WfXg1G43mqoYlM2nc6388Fq5jcXyr5mRsqViLx/GJYdoL0bfXD8nmF+Zn/Iow==}
+    dev: true
+
+  /@types/chai-as-promised/7.1.5:
+    resolution: {integrity: sha512-jStwss93SITGBwt/niYrkf2C+/1KTeZCZl1LaeezTlqppAKeoQC7jxyqYuP72sxBGKCIbw7oHgbYssIRzT5FCQ==}
+    dependencies:
+      '@types/chai': 4.3.3
     dev: true
 
   /@types/chai/4.3.3:
@@ -454,6 +447,15 @@ packages:
   /camelcase/6.3.0:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
+    dev: true
+
+  /chai-as-promised/7.1.1_chai@4.3.6:
+    resolution: {integrity: sha512-azL6xMoi+uxu6z4rhWQ1jbdUhOMhis2PvscD/xjLqNMkv3BPPp2JyyuTHOrf9BOosGpNQ11v6BKv/g57RXbiaA==}
+    peerDependencies:
+      chai: '>= 2.1.2 < 5'
+    dependencies:
+      chai: 4.3.6
+      check-error: 1.0.2
     dev: true
 
   /chai/4.3.6:
@@ -1228,6 +1230,7 @@ packages:
 
   /function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
+    dev: true
 
   /function.prototype.name/1.1.5:
     resolution: {integrity: sha512-uN7m/BzVKQnCUF/iW8jYea67v++2u7m5UgENbHRtdDVclOUP+FMPlCNdmk0h/ysGyo2tavMJEDqJAkJdRa1vMA==}
@@ -1375,6 +1378,7 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+    dev: true
 
   /he/1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}

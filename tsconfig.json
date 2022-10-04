@@ -2,16 +2,11 @@
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
-    "alwaysStrict": true,
     "skipLibCheck": true,
     "strict": true,
-    "preserveConstEnums": true,
-    "declaration": true,
     "module": "node16",
-    "moduleResolution": "node16",
-    "typeRoots": ["node_modules/@types", "./typings"]
+    "moduleResolution": "node16"
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "test", "assets"]
+  "exclude": ["node_modules", "dist", "tests", "examples", "scripts", "assets"]
 }
