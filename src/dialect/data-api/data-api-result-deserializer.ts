@@ -43,6 +43,10 @@ export class SingleStoreDataApiResultDeserializer {
       return customDeserializedValue
     }
 
+    if (value === null) {
+      return value
+    }
+
     const impreciseDataType = this.#getImpreciseDataType(dataType)
 
     switch (impreciseDataType) {
