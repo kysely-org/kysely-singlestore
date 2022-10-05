@@ -1,6 +1,6 @@
 import type {CompiledQuery, DatabaseConnection, QueryResult} from 'kysely'
 
-import {isSelectQuery} from '../../util/is-select-query.js'
+import {isResultSetQuery} from '../../util/is-result-set-query.js'
 import {
   SingleStoreDataApiDatabaseError,
   SingleStoreDataApiMultipleStatementsNotSupportedError,
@@ -36,11 +36,11 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     this.#resultDeserializer = resultDeserializer
   }
 
-  async executeQuery<R>(compiledQuery: CompiledQuery): Promise<QueryResult<R>> {
+  async executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {
     this.#assertSingleStatementQuery(compiledQuery)
 
-    if (isSelectQuery(compiledQuery)) {
-      return await this.#executeSelectQuery(compiledQuery)
+    if (isResultSetQuery(compiledQuery)) {
+      return await this.#executeResultSetQuery(compiledQuery)
     }
 
     return await this.#executeMutationQuery(compiledQuery)
@@ -63,7 +63,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     }
   }
 
-  async #executeSelectQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {
+  async #executeResultSetQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {
     const {error, results} = await this.#sendPostRequest<SingleStoreDataApiQueryTuplesResponseBody>(
       'query/tuples',
       compiledQuery,

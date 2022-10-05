@@ -1,7 +1,15 @@
-import {RawNode, SelectQueryNode, type CompiledQuery} from 'kysely'
+import {
+  DeleteQueryNode,
+  ExplainNode,
+  InsertQueryNode,
+  RawNode,
+  SelectQueryNode,
+  UpdateQueryNode,
+  type CompiledQuery,
+} from 'kysely'
 
 /**
- * Determines whether a compiled query is a select query.
+ * Determines whether a compiled query is a result set returning query.
  *
  * This is crucial for usage of SingleStore's data API, since queries that return
  * result sets, and queries that mutate schema or data, are sent to different
@@ -16,22 +24,38 @@ import {RawNode, SelectQueryNode, type CompiledQuery} from 'kysely'
  * If the first keyword is `select` or `explain`, easy. Else, if the first
  * keyword is `with`, we need to ensure it is not `with...delete`, `with...insert`, `with...replace` or `with...update`.
  */
-export function isSelectQuery(compiledQuery: CompiledQuery): boolean {
+export function isResultSetQuery(compiledQuery: CompiledQuery): boolean {
+  return isSelectQuery(compiledQuery) || isExplainQuery(compiledQuery)
+}
+
+function isSelectQuery(compiledQuery: CompiledQuery): boolean {
   return SelectQueryNode.is(compiledQuery.query) || isRawSelectQuery(compiledQuery)
 }
 
-function isRawSelectQuery(compiledQuery: CompiledQuery): boolean {
-  if (!RawNode.is(compiledQuery.query)) {
+function isExplainQuery(compiledQuery: CompiledQuery): boolean {
+  const {query} = compiledQuery
+
+  if (RawNode.is(query)) {
+    return compiledQuery.sql.match(/^\s*explain/i) != null
+  }
+
+  if (!InsertQueryNode.is(query) && !UpdateQueryNode.is(query) && !DeleteQueryNode.is(query)) {
     return false
   }
 
-  return compiledQuery.sql.match(/^\s*(\(?select|explain)/i) != null || isRawWithSelectQuery(compiledQuery)
+  const {explain} = query
+
+  return explain !== undefined && ExplainNode.is(explain)
 }
 
-function isRawWithSelectQuery(compiledQuery: CompiledQuery): boolean {
-  const sql = compiledQuery.sql.trim()
+function isRawSelectQuery(compiledQuery: CompiledQuery): boolean {
+  const {sql} = compiledQuery
 
-  if (!sql.match(/^with/i)) {
+  return RawNode.is(compiledQuery.query) && (sql.match(/^\s*\(?select/i) != null || isWithSelectSqlString(sql))
+}
+
+function isWithSelectSqlString(sql: string): boolean {
+  if (!sql.match(/^\s*with/i)) {
     return false
   }
 
