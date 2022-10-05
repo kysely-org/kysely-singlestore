@@ -1,10 +1,16 @@
 import {expect, use} from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import {Kysely, sql, type ColumnType, type GeneratedAlways} from 'kysely'
+import {createPool} from 'mysql2/promise'
 import nodeFetch from 'node-fetch'
 import {fetch as undiciFetch} from 'undici'
 
-import {SingleStoreDataApiDialect, SingleStoreDataApiMultipleStatementsNotSupportedError} from '../../src'
+import {
+  SingleStoreDataApiDialect,
+  SingleStoreDataApiMultipleStatementsNotSupportedError,
+  SingleStoreDataApiTransactionsNotSupportedError,
+  type SingleStoreDataApiDialectConfig,
+} from '../../src'
 
 use(chaiAsPromised)
 
@@ -37,22 +43,34 @@ interface Toy {
   pet_id: number
 }
 
+const pool = createPool({
+  database: 'test',
+  password: 'test',
+  user: 'root',
+})
+
 describe('SingleStoreDataApiDialect', () => {
   let db: Kysely<Database>
 
   before(() => {
-    db = new Kysely({
-      dialect: new SingleStoreDataApiDialect({
-        database: 'test',
-        fetch: getFetch(),
-        hostname: 'localhost:9000',
-        password: 'test',
-        username: 'root',
-      }),
-    })
+    db = getDB()
   })
 
-  it('should throw an exception when asked to execute a multi-statement query.', async () => {
+  after(async () => {
+    await pool.end()
+  })
+
+  it('should reject executing transactions.', async () => {
+    await expect(
+      getDB()
+        .transaction()
+        .execute(async (trx) => {
+          await trx.selectFrom('person').selectAll().execute()
+        }),
+    ).to.be.rejectedWith(SingleStoreDataApiTransactionsNotSupportedError)
+  })
+
+  it('should reject executing multi-statement queries.', async () => {
     await expect(sql`select 1; select 2`.execute(db)).to.be.rejectedWith(
       SingleStoreDataApiMultipleStatementsNotSupportedError,
     )
@@ -62,28 +80,43 @@ describe('SingleStoreDataApiDialect', () => {
     it('should execute select queries.', async () => {
       const people = await db.selectFrom('person').selectAll().execute()
 
-      expect(people).to.be.an('array').with.length.greaterThan(0)
-      people.forEach((person) => {
-        expect(person).to.be.an('object')
-      })
+      expectPeople(people)
     })
 
     it('should execute raw select queries.', async () => {
       const {rows: people} = await sql<Person>`select * from ${sql.table('person')}`.execute(db)
 
-      expect(people).to.be.an('array').with.length.greaterThan(0)
+      expectPeople(people)
     })
 
     it('should execute raw with...select queries.', async () => {
-      const {rows: jennifers} = await sql<Person>`with jennifers as (select * from ${sql.table(
-        'person',
-      )} where ${sql.ref('first_name')} = ${sql.literal('Jennifer')}) select * from jennifers`.execute(db)
+      const {rows: jennifers} = await sql<Person>`
+        with jennifers as (
+          select *
+          from ${sql.table('person')}
+          where ${sql.ref('first_name')} = ${sql.literal('Jennifer')}
+        )
+        select * from jennifers`.execute(db)
 
-      expect(jennifers).to.be.an('array').with.length.greaterThan(0)
+      expectPeople(jennifers)
+    })
+
+    it('should execute raw select union queries.', async () => {
+      const {rows: people} = await sql<Person>`
+        (select * from ${sql.table('person')} where ${sql.ref('first_name')} = ${'Jennifer'})
+        union all
+        (select * from ${sql.table('person')} where ${sql.ref('first_name')} = ${'Arnold'})
+      `.execute(db)
+
+      expectPeople(people)
     })
   })
 
   describe('insert queries', () => {
+    after(async () => {
+      await clearToys()
+    })
+
     it('should execute insert queries.', async () => {
       const doggo = await db.selectFrom('pet').where('name', '=', 'Doggo').select('id').executeTakeFirst()
 
@@ -107,6 +140,9 @@ describe('SingleStoreDataApiDialect', () => {
         .executeTakeFirst()
 
       expect(tennisBall).to.not.be.undefined
+      expect(tennisBall!.name).to.equal('Tennis Ball')
+      expect(tennisBall!.pet_id).to.equal(doggo!.id)
+      expect(tennisBall!.price).to.equal('1.9900')
     })
 
     it('should execute raw insert queries.', async () => {
@@ -129,6 +165,9 @@ describe('SingleStoreDataApiDialect', () => {
         .executeTakeFirst()
 
       expect(fluffyFish).to.not.be.undefined
+      expect(fluffyFish!.name).to.equal('Fluffy Fish')
+      expect(fluffyFish!.pet_id).to.equal(catto!.id)
+      expect(fluffyFish!.price).to.equal('3.4900')
     })
 
     it('should execute raw with...insert queries.', async () => {
@@ -149,10 +188,21 @@ describe('SingleStoreDataApiDialect', () => {
       const wheel = await db.selectFrom('toy').where('id', '=', Number(result.insertId)).selectAll().executeTakeFirst()
 
       expect(wheel).to.not.be.undefined
+      expect(wheel!.name).to.equal('Wheel')
+      expect(wheel!.pet_id).to.be.a('number')
+      expect(wheel!.price).to.equal('9.9900')
     })
   })
 
   describe('update queries', () => {
+    before(async () => {
+      await insertToys()
+    })
+
+    after(async () => {
+      await clearToys()
+    })
+
     it('should execute update queries.', async () => {
       const doggo = await db.selectFrom('pet').where('name', '=', 'Doggo').select('id').executeTakeFirst()
 
@@ -169,8 +219,16 @@ describe('SingleStoreDataApiDialect', () => {
       expect(result.numUpdatedRows).to.equal(1n)
     })
 
-    it.skip('should execute raw update queries.', async () => {
-      // TODO: ...
+    it('should execute raw update queries.', async () => {
+      const catto = await db.selectFrom('pet').where('name', '=', 'Catto').select('id').executeTakeFirst()
+
+      expect(catto).to.not.be.undefined
+
+      const result = await sql`update ${sql.table('toy')} set ${sql.ref('price')} = ${sql.ref(
+        'price',
+      )} + 1 where ${sql.ref('pet_id')} = ${catto!.id}`.execute(db)
+
+      expect(result.numUpdatedOrDeletedRows).to.equal(1n)
     })
 
     it.skip('should execute raw with...update queries.', async () => {
@@ -179,6 +237,14 @@ describe('SingleStoreDataApiDialect', () => {
   })
 
   describe('delete queries', () => {
+    before(async () => {
+      await insertToys()
+    })
+
+    after(async () => {
+      await clearToys()
+    })
+
     it('should execute delete queries.', async () => {
       const doggo = await db.selectFrom('pet').where('name', '=', 'Doggo').select('id').executeTakeFirst()
 
@@ -189,8 +255,14 @@ describe('SingleStoreDataApiDialect', () => {
       expect(result.numDeletedRows).to.equal(1n)
     })
 
-    it.skip('should execute raw delete queries.', async () => {
-      // TODO: ...
+    it('should execute raw delete queries.', async () => {
+      const catto = await db.selectFrom('pet').where('name', '=', 'Catto').select('id').executeTakeFirst()
+
+      expect(catto).to.not.be.undefined
+
+      const result = await sql`delete from ${sql.table('toy')} where ${sql.ref('pet_id')} = ${catto!.id}`.execute(db)
+
+      expect(result.numUpdatedOrDeletedRows).to.equal(1n)
     })
 
     it.skip('should execute raw with...delete queries.', async () => {
@@ -203,7 +275,20 @@ describe('SingleStoreDataApiDialect', () => {
   })
 })
 
-export function getFetch() {
+function getDB(config?: Partial<SingleStoreDataApiDialectConfig>): Kysely<Database> {
+  return new Kysely({
+    dialect: new SingleStoreDataApiDialect({
+      database: 'test',
+      fetch: getFetch(),
+      hostname: 'localhost:9000',
+      password: 'test',
+      username: 'root',
+      ...config,
+    }),
+  })
+}
+
+function getFetch() {
   const {version} = process
 
   if (version.startsWith('v18')) {
@@ -215,4 +300,34 @@ export function getFetch() {
   }
 
   return nodeFetch
+}
+
+function expectPeople(people: any[]): void {
+  expect(people).to.be.an('array').with.length.greaterThan(0)
+  people.forEach((person) => {
+    expect(person).to.be.an('object')
+    expect(person.age).to.be.a('number')
+    expect(person.first_name).to.satisfy((value: unknown) => typeof value === 'string' || value === null)
+    expect(person.gender).to.be.a('string')
+    expect(person.id).to.be.a('number')
+    expect(person.last_name).to.satisfy((value: unknown) => typeof value === 'string' || value === null)
+    expect(person.middle_name).to.satisfy((value: unknown) => typeof value === 'string' || value === null)
+  })
+}
+
+async function clearToys(): Promise<void> {
+  await pool.execute('truncate table `toy`')
+}
+
+async function insertToys(): Promise<void> {
+  const query = getDB()
+    .insertInto('toy')
+    .values([
+      {name: 'Tennis Ball', pet_id: 2, price: 1.99},
+      {name: 'Fluffy Fish', pet_id: 1, price: 3.49},
+      {name: 'Wheel', pet_id: 3, price: 9.99},
+    ])
+    .compile()
+
+  await pool.execute(query.sql, query.parameters)
 }
