@@ -1,13 +1,9 @@
-import type {SingleStoreDataApiResponseBodyError} from './types.js'
-
 export class SingleStoreDataApiDatabaseError extends Error {
-  body: SingleStoreDataApiResponseBodyError
   status: number
 
-  constructor(message: string, status: number, body: SingleStoreDataApiResponseBodyError) {
+  constructor(message: string, status: number) {
     super(message)
 
-    this.body = body
     this.name = 'SingleStoreDataApiDatabaseError'
     this.status = status
   }

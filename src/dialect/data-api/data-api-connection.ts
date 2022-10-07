@@ -70,7 +70,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     )
 
     if (error) {
-      throw new SingleStoreDataApiDatabaseError(error.message, 400, error)
+      throw new SingleStoreDataApiDatabaseError(error.message, error.code)
     }
 
     const [result] = results
@@ -119,15 +119,12 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   }
 
   async #throwApiError(response: FetchResponse): Promise<never> {
-    let body = {
-      code: response.status,
-      message: response.statusText,
-    }
+    let message = response.statusText
 
     try {
-      ;({error: body} = await response.json())
+      message = (await response.text()) || message
     } catch {}
 
-    throw new SingleStoreDataApiDatabaseError(response.statusText, response.status, body)
+    throw new SingleStoreDataApiDatabaseError(message, response.status)
   }
 }
