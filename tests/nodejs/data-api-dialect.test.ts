@@ -883,11 +883,7 @@ async function insertToys(): Promise<void> {
 }
 
 function isBase64(str: string): boolean {
-  try {
-    return btoa(atob(str)) === str
-  } catch {
-    return false
-  }
+  return Buffer.from(str, 'base64').toString('base64') === str
 }
 
 function isOfDateFormat(format: string) {
