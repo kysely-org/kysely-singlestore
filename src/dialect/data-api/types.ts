@@ -64,6 +64,11 @@ export interface SingleStoreDataApiDeserializationConfig {
    * Should cast `DECIMAL` as `number`? otherwise keep as `string`.
    *
    * Default is `false`.
+   *
+   * Be advised, values returned from database can be bigger than javascript's
+   * biggest number or smaller than javascript's smallest number. Unwrapping such
+   * values will result in wrong numbers due to overflow/underflow. Make sure this
+   * cannot happen with decimal values in your database, or avoid using this option.
    */
   unwrapDecimals?: boolean
 }

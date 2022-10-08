@@ -1,5 +1,6 @@
 import {expect, use} from 'chai'
 import chaiAsPromised from 'chai-as-promised'
+import {isMatch} from 'date-fns'
 import {Kysely, sql, type ColumnType, type GeneratedAlways, type Selectable} from 'kysely'
 import {createPool} from 'mysql2/promise'
 import nodeFetch from 'node-fetch'
@@ -19,6 +20,7 @@ interface Database {
   person: Person
   pet: Pet
   toy: Toy
+  data_type_test: DataTypeTest
 }
 
 interface Person {
@@ -42,6 +44,51 @@ interface Toy {
   name: string
   price: ColumnType<string, number, number>
   pet_id: number
+}
+
+interface DataTypeTest {
+  bigint_col: unknown
+  binary_col: unknown
+  bit_col: unknown
+  blob_col: unknown
+  bool_col: unknown
+  boolean_col: unknown
+  char_col: unknown
+  date_col: unknown
+  datetime_col: unknown
+  datetime6_col: unknown
+  dec_col: unknown
+  decimal_col: unknown
+  double_col: unknown
+  enum_col: unknown
+  fixed_col: unknown
+  float_col: unknown
+  geography_col: unknown
+  geographypoint_col: unknown
+  int_col: unknown
+  integer_col: unknown
+  json_col: unknown
+  longblob_col: unknown
+  longtext_col: unknown
+  mediumblob_col: unknown
+  mediumint_col: unknown
+  mediumtext_col: unknown
+  numeric_col: unknown
+  real_col: unknown
+  set_col: unknown
+  smallint_col: unknown
+  text_col: unknown
+  time_col: unknown
+  time6_col: unknown
+  timestamp_col: unknown
+  timestamp6_col: unknown
+  tinyblob_col: unknown
+  tinyint_col: unknown
+  tinytext_col: unknown
+  varbinary_col: unknown
+  varchar_col: unknown
+  year_col: unknown
+  null_col: unknown
 }
 
 const pool = createPool({
@@ -482,6 +529,300 @@ describe('SingleStoreDataApiDialect', () => {
   describe.skip('ddl queries', () => {
     // TODO: ...
   })
+
+  describe('deserialization', () => {
+    it('should return values as-is when no deserialization options are passed.', async () => {
+      const result = await getDB({deserialization: undefined})
+        .selectFrom('data_type_test')
+        .selectAll()
+        .executeTakeFirstOrThrow()
+
+      console.log(result)
+
+      expect(result.bigint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.binary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bit_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.blob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bool_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.boolean_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.char_col).to.be.a('string')
+      expect(result.date_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd'))
+      expect(result.datetime6_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS'))
+      expect(result.datetime_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss'))
+      expect(result.dec_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.decimal_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.double_col).to.be.a('number')
+      expect(result.enum_col).to.be.a('string')
+      expect(result.fixed_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.float_col).to.be.a('number')
+      expect(result.geography_col).to.be.a('string')
+      expect(result.geographypoint_col).to.be.a('string')
+      expect(result.int_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.integer_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.json_col)
+        .to.be.an('object')
+        .that.satisfies((value: Record<string, unknown>) => !Array.isArray(value))
+      expect(result.longblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.longtext_col).to.be.a('string')
+      expect(result.mediumblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.mediumint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.mediumtext_col).to.be.a('string')
+      expect(result.numeric_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.real_col).to.be.a('number')
+      expect(result.set_col)
+        .to.be.a('string')
+        .that.matches(/^\w+(,\w+)*$/)
+      expect(result.smallint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.text_col).to.be.a('string')
+      // expect(result.time6_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss.SSSSSS'))
+      expect(result.time6_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}\.\d{6}$/)
+      // expect(result.time_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss'))
+      expect(result.time_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}$/)
+      expect(result.timestamp6_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS'))
+      expect(result.timestamp_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss'))
+      expect(result.tinyblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.tinyint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.tinytext_col).to.be.a('string')
+      expect(result.varbinary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.varchar_col).to.be.a('string')
+      expect(result.year_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy'))
+      expect(result.null_col).to.be.null
+    })
+
+    it('should cast date-like values as native dates when "deserialization.castDatesAsNativeDates" is true.', async () => {
+      const result = await getDB({
+        deserialization: {
+          castDatesAsNativeDates: true,
+        },
+      })
+        .selectFrom('data_type_test')
+        .selectAll()
+        .executeTakeFirstOrThrow()
+
+      expect(result.bigint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.binary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bit_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.blob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bool_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.boolean_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.char_col).to.be.a('string')
+      expect(result.date_col)
+        .to.be.an.instanceOf(Date)
+        .that.satisfies(isEqualToISODateString('9999-12-31T00:00:00.000Z'))
+      expect(result.datetime6_col)
+        .to.be.an.instanceOf(Date)
+        .that.satisfies(isEqualToISODateString('9999-12-31T23:59:59.999Z'))
+      expect(result.datetime_col)
+        .to.be.an.instanceOf(Date)
+        .that.satisfies(isEqualToISODateString('9999-12-31T23:59:59.000Z'))
+      expect(result.dec_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.decimal_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.double_col).to.be.a('number')
+      expect(result.enum_col).to.be.a('string')
+      expect(result.fixed_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.float_col).to.be.a('number')
+      expect(result.geography_col).to.be.a('string')
+      expect(result.geographypoint_col).to.be.a('string')
+      expect(result.int_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.integer_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.json_col)
+        .to.be.an('object')
+        .that.satisfies((value: Record<string, unknown>) => !Array.isArray(value))
+      expect(result.longblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.longtext_col).to.be.a('string')
+      expect(result.mediumblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.mediumint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.mediumtext_col).to.be.a('string')
+      expect(result.numeric_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.real_col).to.be.a('number')
+      expect(result.set_col)
+        .to.be.a('string')
+        .that.matches(/^\w+(,\w+)*$/)
+      expect(result.smallint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.text_col).to.be.a('string')
+      // expect(result.time6_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss.SSSSSS'))
+      expect(result.time6_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}\.\d{6}$/)
+      // expect(result.time_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss'))
+      expect(result.time_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}$/)
+      expect(result.timestamp6_col)
+        .to.be.an.instanceOf(Date)
+        .that.satisfies(isEqualToISODateString('2038-01-19T03:14:07.999Z'))
+      expect(result.timestamp_col)
+        .to.be.an.instanceOf(Date)
+        .that.satisfies(isEqualToISODateString('2038-01-19T03:14:07.000Z'))
+      expect(result.tinyblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.tinyint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.tinytext_col).to.be.a('string')
+      expect(result.varbinary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.varchar_col).to.be.a('string')
+      expect(result.year_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy'))
+      expect(result.null_col).to.be.null
+    })
+
+    it('should cast tinyint (and synonyms) values to boolean when "deserialization.castTinyIntAsBoolean" is true.', async () => {
+      const result = await getDB({
+        deserialization: {
+          castTinyIntAsBoolean: true,
+        },
+      })
+        .selectFrom('data_type_test')
+        .selectAll()
+        .executeTakeFirstOrThrow()
+
+      expect(result.bigint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.binary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bit_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.blob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bool_col).to.be.false
+      expect(result.boolean_col).to.be.true
+      expect(result.char_col).to.be.a('string')
+      expect(result.date_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd'))
+      expect(result.datetime6_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS'))
+      expect(result.datetime_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss'))
+      expect(result.dec_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.decimal_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.double_col).to.be.a('number')
+      expect(result.enum_col).to.be.a('string')
+      expect(result.fixed_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.float_col).to.be.a('number')
+      expect(result.geography_col).to.be.a('string')
+      expect(result.geographypoint_col).to.be.a('string')
+      expect(result.int_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.integer_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.json_col)
+        .to.be.an('object')
+        .that.satisfies((value: Record<string, unknown>) => !Array.isArray(value))
+      expect(result.longblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.longtext_col).to.be.a('string')
+      expect(result.mediumblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.mediumint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.mediumtext_col).to.be.a('string')
+      expect(result.numeric_col)
+        .to.be.a('string')
+        .that.matches(/^\-?\d+\.\d*$/)
+      expect(result.real_col).to.be.a('number')
+      expect(result.set_col)
+        .to.be.a('string')
+        .that.matches(/^\w+(,\w+)*$/)
+      expect(result.smallint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.text_col).to.be.a('string')
+      // expect(result.time6_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss.SSSSSS'))
+      expect(result.time6_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}\.\d{6}$/)
+      // expect(result.time_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss'))
+      expect(result.time_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}$/)
+      expect(result.timestamp6_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS'))
+      expect(result.timestamp_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss'))
+      expect(result.tinyblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.tinyint_col).to.be.true
+      expect(result.tinytext_col).to.be.a('string')
+      expect(result.varbinary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.varchar_col).to.be.a('string')
+      expect(result.year_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy'))
+      expect(result.null_col).to.be.null
+    })
+
+    it('should cast decimal (and synonyms) values to number when "deserialization.unwrapDecimals" is true.', async () => {
+      const result = await getDB({
+        deserialization: {
+          unwrapDecimals: true,
+        },
+      })
+        .selectFrom('data_type_test')
+        .selectAll()
+        .executeTakeFirstOrThrow()
+
+      expect(result.bigint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.binary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bit_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.blob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.bool_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.boolean_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.char_col).to.be.a('string')
+      expect(result.date_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd'))
+      expect(result.datetime6_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS'))
+      expect(result.datetime_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss'))
+      expect(result.dec_col).to.be.a('number').that.equals(99999999999999.9999)
+      expect(result.decimal_col).to.be.a('number').that.equals(-99999999999999.9999)
+      expect(result.double_col).to.be.a('number')
+      expect(result.enum_col).to.be.a('string')
+      expect(result.fixed_col).to.be.a('number').that.equals(0)
+      expect(result.float_col).to.be.a('number')
+      expect(result.geography_col).to.be.a('string')
+      expect(result.geographypoint_col).to.be.a('string')
+      expect(result.int_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.integer_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.json_col)
+        .to.be.an('object')
+        .that.satisfies((value: Record<string, unknown>) => !Array.isArray(value))
+      expect(result.longblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.longtext_col).to.be.a('string')
+      expect(result.mediumblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.mediumint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.mediumtext_col).to.be.a('string')
+      expect(result.numeric_col).to.be.a('number').that.equals(99999999999999.9999)
+      expect(result.real_col).to.be.a('number')
+      expect(result.set_col)
+        .to.be.a('string')
+        .that.matches(/^\w+(,\w+)*$/)
+      expect(result.smallint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.text_col).to.be.a('string')
+      // expect(result.time6_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss.SSSSSS'))
+      expect(result.time6_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}\.\d{6}$/)
+      // expect(result.time_col).to.be.a('string').that.satisfies(isOfDateFormat('HHH:mm:ss'))
+      expect(result.time_col)
+        .to.be.a('string')
+        .that.matches(/^\d{1,3}:\d{2}:\d{2}$/)
+      expect(result.timestamp6_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS'))
+      expect(result.timestamp_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy-MM-dd HH:mm:ss'))
+      expect(result.tinyblob_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.tinyint_col).to.be.a('number').that.satisfies(Number.isInteger)
+      expect(result.tinytext_col).to.be.a('string')
+      expect(result.varbinary_col).to.be.a('string').that.satisfies(isBase64)
+      expect(result.varchar_col).to.be.a('string')
+      expect(result.year_col).to.be.a('string').that.satisfies(isOfDateFormat('yyyy'))
+      expect(result.null_col).to.be.null
+    })
+
+    it.skip('should use "deserialization.deserializer" when provided.', async () => {
+      // TODO: ...
+    })
+  })
 })
 
 function getDB(config?: Partial<SingleStoreDataApiDialectConfig>): Kysely<Database> {
@@ -539,4 +880,20 @@ async function insertToys(): Promise<void> {
     .compile()
 
   await pool.execute(query.sql, query.parameters)
+}
+
+function isBase64(str: string): boolean {
+  try {
+    return btoa(atob(str)) === str
+  } catch {
+    return false
+  }
+}
+
+function isOfDateFormat(format: string) {
+  return (str: string): boolean => isMatch(str, format)
+}
+
+function isEqualToISODateString(timestamp: string) {
+  return (date: Date): boolean => date.toISOString() === timestamp
 }

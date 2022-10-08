@@ -10,6 +10,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.38.0
   chai: ^4.3.6
   chai-as-promised: ^7.1.1
+  date-fns: ^2.29.3
   esbuild: ^0.15.10
   esbuild-runner: ^2.2.1
   eslint: ^8.24.0
@@ -37,6 +38,7 @@ devDependencies:
   '@typescript-eslint/parser': 5.38.0_7ilbxdl5iguzcjriqqcg2m5cku
   chai: 4.3.6
   chai-as-promised: 7.1.1_chai@4.3.6
+  date-fns: 2.29.3
   esbuild: 0.15.10
   esbuild-runner: 2.2.1_esbuild@0.15.10
   eslint: 8.24.0
@@ -535,6 +537,11 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+    dev: true
+
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
     dev: true
 
   /debug/2.6.9:
