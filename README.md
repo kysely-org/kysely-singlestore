@@ -20,6 +20,10 @@ npm i kysely-singlestore kysely
 
 ### Data API Dialect
 
+SingleStore Data API allows executing SQL queries in the browser and is a great fit for serverless functions and other auto-scaling compute services. It does not support transactions at this point in time.
+
+Node.js (16.x) example:
+
 ```ts
 import {Kysely} from 'kysely'
 import {SingleStoreDataApiDialect, SingleStoreDataType} from 'kysely-singlestore'
@@ -49,6 +53,43 @@ const db = new Kysely<Database>({
       unwrapDecimals: true,
     },
     fetch,
+    hostname: '<hostname>',
+    password: '<password>',
+    username: '<username>',
+  }),
+})
+```
+
+Browser example:
+
+```ts
+import {Kysely} from 'kysely'
+import {SingleStoreDataApiDialect, SingleStoreDataType} from 'kysely-singlestore'
+
+interface Database {
+  person: {
+    id: string
+    first_name: string | null
+    last_name: string | null
+  }
+  pet: {
+    id: string
+    name: string
+    owner_id: string
+  }
+}
+
+const db = new Kysely<Database>({
+  dialect: new SingleStoreDataApiDialect({
+    database: '<database>',
+    deserialization: {
+      castDatesAsNativeDates: true,
+      castTinyIntAsBoolean: true,
+      deserialize: (value, dataType, columnName) =>
+        dataType === SingleStoreDataType.Json && columnName === 'pet' ? new Pet(value) : undefined,
+      unwrapDecimals: true,
+    },
+    fetch: window.fetch.bind(window),
     hostname: '<hostname>',
     password: '<password>',
     username: '<username>',
