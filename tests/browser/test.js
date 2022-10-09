@@ -25,6 +25,7 @@ const {chromium, firefox} = require('playwright')
     })
 
     browser = await chromium.launch({
+      args: ['--disable-features=BlockInsecurePrivateNetworkRequests'],
       headless: true,
       logger: {
         isEnabled: () => true,
