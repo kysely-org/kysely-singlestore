@@ -63,16 +63,16 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm i
+        run: pnpm i && pnpx playwright install-deps chromium
 
       - name: Build
         run: pnpm run build
 
       - name: Run node tests
-        run: pnpm test
+        run: pnpm run test:nodejs
 
-      # - name: Run browser tests
-      #   run: pnpm run test:browser
+      - name: Run browser tests
+        run: pnpm run test:browser
 
       # - name: Run deno tests
       #   run: pnpm run test:deno

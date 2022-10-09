@@ -1,6 +1,6 @@
 import {Kysely, type GeneratedAlways} from 'kysely'
 
-import {SingleStoreDataApiDialect} from '../../dist/cjs'
+import {SingleStoreDataApiDialect} from '../..'
 
 interface Person {
   id: GeneratedAlways<number>
@@ -25,16 +25,18 @@ const db = new Kysely<Database>({
   }),
 })
 
-window.addEventListener('load', async () => {
-  const jennifer = await db
-    .selectFrom('person')
+window.addEventListener('load', () => {
+  db.selectFrom('person')
     .selectAll()
     .where('first_name', '=', 'Jennifer')
-    .executeTakeFirstOrThrow()
+    .executeTakeFirst()
+    .then((jennifer) => {
+      console.log('jennifer', jennifer)
 
-  const result = document.createElement('span')
-  result.id = 'result'
-  result.innerHTML = JSON.stringify(jennifer)
+      const result = document.createElement('span')
+      result.id = 'result'
+      result.innerHTML = JSON.stringify(jennifer)
 
-  document.body.appendChild(result)
+      document.body.appendChild(result)
+    })
 })
