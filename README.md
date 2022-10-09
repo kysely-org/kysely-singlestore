@@ -99,7 +99,7 @@ const db = new Kysely<Database>({
 
 ### "Classic" Dialect - Soon<sup>TM</sup>
 
-SingleStore is wire-compatible with MySQL so you can connect using `mysql2`, and take advantage of fast communication, connection pools and transactions.
+SingleStore is wire-compatible with MySQL so you can connect to it using `mysql2` in node environments, and take advantage of connection pools and transactions.
 
 ## License
 
