@@ -9,7 +9,7 @@
 
 const assert = require('assert')
 const path = require('path')
-const {chromium, firefox} = require('playwright')
+const {chromium} = require('playwright')
 
 ;(async () => {
   let browser
@@ -24,33 +24,15 @@ const {chromium, firefox} = require('playwright')
       gender: 'female',
     })
 
-    browser = await chromium.launch({
-      args: ['--disable-features=BlockInsecurePrivateNetworkRequests'],
-      headless: true,
-      logger: {
-        isEnabled: () => true,
-        log: console.log.bind(console),
-      },
-      // proxy: {
-      //   server: 'localhost:8080',
-      //   bypass: '<-loopback>',
-
-      // },
-    })
+    browser = await chromium.launch()
 
     const page = await browser.newPage()
 
-    await page.route(
-      (url) => url.host === 'localhost:9000',
-      async (route, req) =>
-        route.fulfill({
-          response: await page.request.fetch(req),
-        }),
-    )
+    page.on('console', console.log)
 
     await page.goto(`file://${path.join(__dirname, 'index.html')}`)
 
-    await page.waitForSelector('#result', {timeout: 60_000})
+    await page.waitForSelector('#result', {timeout: 1_000})
 
     const actual = await page.$eval('#result', (element) => element.innerHTML)
 
