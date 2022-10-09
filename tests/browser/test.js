@@ -39,6 +39,14 @@ const {chromium, firefox} = require('playwright')
 
     const page = await browser.newPage()
 
+    await page.route(
+      (url) => url.host === 'localhost:9000',
+      async (route, req) =>
+        route.fulfill({
+          response: await page.request.fetch(req),
+        }),
+    )
+
     await page.goto(`file://${path.join(__dirname, 'index.html')}`)
 
     await page.waitForSelector('#result', {timeout: 60_000})
