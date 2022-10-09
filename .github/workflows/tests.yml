@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
 jobs:
-  run-tests:
+  run-node-tests:
     runs-on: ubuntu-latest
 
     strategy:
@@ -63,19 +63,13 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm i && pnpx playwright install-deps chromium
+        run: pnpm i
 
       - name: Build
         run: pnpm run build
 
       - name: Run node tests
         run: pnpm run test:nodejs
-
-      - name: Run browser tests
-        run: pnpm run test:browser
-
-      # - name: Run deno tests
-      #   run: pnpm run test:deno
 
       - name: Lint
         run: pnpm run lint
@@ -85,3 +79,104 @@ jobs:
 
       - name: Run cjs check
         run: cd examples/cjs && npm i && npm start
+
+  run-lint-and-examples:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Run esm check
+        run: cd examples/esm && npm i && npm start
+
+      - name: Run cjs check
+        run: cd examples/cjs && npm i && npm start
+
+  run-browser-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      singlestore:
+        image: ghcr.io/singlestore-labs/singlestoredb-dev
+        ports:
+          - 3306:3306
+          - 8080:8080
+          - 9000:9000
+        env:
+          ROOT_PASSWORD: test
+          SINGLESTORE_LICENSE: ${{ secrets.SINGLESTORE_LICENSE }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Init SingleStore test database
+        run: |
+          mysql -u root -ptest -h 127.0.0.1 < /${GITHUB_WORKSPACE}/scripts/init.sql
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm i && pnpx playwright install-deps chromium
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Run browser tests
+        run: pnpm run test:browser
