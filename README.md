@@ -58,7 +58,7 @@ To fix that, add an [`import_map.json`](https://deno.land/manual@v1.26.1/linking
 
 #### Node.js 16.8+
 
-Older versions of node are also supported, just swap [`undici`](https://github.com/nodejs/undici) with [`node-fetch`](https://github.com/node-fetch/node-fetch).
+Older node versions are supported as well, just swap [`undici`](https://github.com/nodejs/undici) with [`node-fetch`](https://github.com/node-fetch/node-fetch).
 
 ```ts
 import {Kysely} from 'kysely'
