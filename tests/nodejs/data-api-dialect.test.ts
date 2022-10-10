@@ -537,8 +537,6 @@ describe('SingleStoreDataApiDialect', () => {
         .selectAll()
         .executeTakeFirstOrThrow()
 
-      console.log(result)
-
       expect(result.bigint_col).to.be.a('number').that.satisfies(Number.isInteger)
       expect(result.binary_col).to.be.a('string').that.satisfies(isBase64)
       expect(result.bit_col).to.be.a('string').that.satisfies(isBase64)
