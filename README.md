@@ -54,7 +54,7 @@ To fix that, add an [`import_map.json`](https://deno.land/manual@v1.26.1/linking
 
 ### Data API Dialect
 
-SingleStore Data API allows executing SQL queries in the browser and is a great fit for serverless functions and other auto-scaling compute services. It does not support transactions at this point in time.
+[SingleStore Data API](https://docs.singlestore.com/managed-service/en/reference/data-api.html) allows executing SQL queries in the browser and is a great fit for serverless functions and other auto-scaling compute services. It does not support transactions at this point in time.
 
 #### Node.js 16.8+
 
