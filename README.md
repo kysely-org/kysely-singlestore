@@ -12,8 +12,44 @@
 
 You should install [Kysely](https://github.com/koskimas/kysely) with `kysely-singlestore` as it is a required peer dependency.
 
+### Node.js
+
+#### npm 7+
+
+```bash
+npm i kysely-singlestore
+```
+
+#### npm <7
+
 ```bash
 npm i kysely-singlestore kysely
+```
+
+#### yarn
+
+```bash
+yarn add kysely-singlestore kysely
+```
+
+#### pnpm
+
+```bash
+pnpm add kysely-singlestore kysely
+```
+
+### Deno
+
+This package uses/extends some [Kysely](https://github.com/koskimas/kysely) types and classes, which are imported using it's npm package name -- not a relative file path or cdn url.
+
+To fix that, add an [`import_map.json`](https://deno.land/manual@v1.26.1/linking_to_external_code/import_maps) file.
+
+```json
+{
+  "imports": {
+    "kysely": "https://cdn.jsdelivr.net/npm/kysely@0.22.0/dist/esm/index.js"
+  }
+}
 ```
 
 ## Usage
@@ -22,7 +58,9 @@ npm i kysely-singlestore kysely
 
 SingleStore Data API allows executing SQL queries in the browser and is a great fit for serverless functions and other auto-scaling compute services. It does not support transactions at this point in time.
 
-Node.js (16.x) example:
+#### Node.js 16.8+
+
+Older versions of node are also supported, just swap [`undici`]() with [`node-fetch`]().
 
 ```ts
 import {Kysely} from 'kysely'
@@ -60,7 +98,7 @@ const db = new Kysely<Database>({
 })
 ```
 
-Browser example:
+#### Browser
 
 ```ts
 import {Kysely} from 'kysely'
@@ -90,6 +128,46 @@ const db = new Kysely<Database>({
       unwrapDecimals: true,
     },
     fetch: window.fetch.bind(window),
+    hostname: '<hostname>',
+    password: '<password>',
+    username: '<username>',
+  }),
+})
+```
+
+#### Deno
+
+```ts
+import {Kysely} from 'https://cdn.jsdelivr.net/npm/kysely@0.22.0/dist/esm/index.js'
+import {
+  SingleStoreDataApiDialect,
+  SingleStoreDataType,
+} from 'https://cdn.jsdelivr.net/npm/kysely-singlestore@latest/dist/esm/index.js'
+
+interface Database {
+  person: {
+    id: string
+    first_name: string | null
+    last_name: string | null
+  }
+  pet: {
+    id: string
+    name: string
+    owner_id: string
+  }
+}
+
+const db = new Kysely<Database>({
+  dialect: new SingleStoreDataApiDialect({
+    database: '<database>',
+    deserialization: {
+      castDatesAsNativeDates: true,
+      castTinyIntAsBoolean: true,
+      deserialize: (value, dataType, columnName) =>
+        dataType === SingleStoreDataType.Json && columnName === 'pet' ? new Pet(value) : undefined,
+      unwrapDecimals: true,
+    },
+    fetch: fetch,
     hostname: '<hostname>',
     password: '<password>',
     username: '<username>',
