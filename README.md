@@ -10,29 +10,27 @@
 
 ## Installation
 
-You should install [Kysely](https://github.com/koskimas/kysely) with `kysely-singlestore` as it is a required peer dependency.
-
 ### Node.js
 
-#### npm 7+
+#### NPM 7+
 
 ```bash
 npm i kysely-singlestore
 ```
 
-#### npm <7
+#### NPM <7
 
 ```bash
 npm i kysely-singlestore kysely
 ```
 
-#### yarn
+#### Yarn
 
 ```bash
 yarn add kysely-singlestore kysely
 ```
 
-#### pnpm
+#### PNPM
 
 ```bash
 pnpm add kysely-singlestore kysely
@@ -40,7 +38,7 @@ pnpm add kysely-singlestore kysely
 
 ### Deno
 
-This package uses/extends some [Kysely](https://github.com/koskimas/kysely) types and classes, which are imported using it's npm package name -- not a relative file path or cdn url.
+This package uses/extends some [Kysely](https://github.com/koskimas/kysely) types and classes, which are imported using it's NPM package name -- not a relative file path or CDN url.
 
 To fix that, add an [`import_map.json`](https://deno.land/manual@v1.26.1/linking_to_external_code/import_maps) file.
 
@@ -60,7 +58,7 @@ SingleStore Data API allows executing SQL queries in the browser and is a great 
 
 #### Node.js 16.8+
 
-Older versions of node are also supported, just swap [`undici`]() with [`node-fetch`]().
+Older versions of node are also supported, just swap [`undici`](https://github.com/nodejs/undici) with [`node-fetch`](https://github.com/node-fetch/node-fetch).
 
 ```ts
 import {Kysely} from 'kysely'
