@@ -44,7 +44,7 @@
     "kysely": ">= 0.7.8 < 1"
   },
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.3",
+    "@tsconfig/node16": "^1.0.3",
     "@types/chai": "^4.3.3",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^10.0.0",
@@ -69,7 +69,7 @@
     "prettier-plugin-organize-imports": "^3.1.1",
     "prettier-plugin-pkg": "^0.17.1",
     "tsup": "^6.2.3",
-    "typescript": "^4.8.3",
+    "typescript": "^4.8.4",
     "undici": "^5.10.0"
   },
   "sideEffects": false
