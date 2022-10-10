@@ -2,7 +2,7 @@
 
 # kysely-singlestore
 
-[![Tests](https://github.com/igalklebanov/kysely-singlestore/actions/workflows/tests.yml/badge.svg)](https://github.com/igalklebanov/kysely-singlestore/actions/workflows/tests.yml)
+[![tests](https://github.com/igalklebanov/kysely-singlestore/actions/workflows/tests.yml/badge.svg)](https://github.com/igalklebanov/kysely-singlestore/actions/workflows/tests.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0f759c07e4dd4f9889a21ea2a49d5a2e)](https://www.codacy.com/gh/igalklebanov/kysely-singlestore/dashboard?utm_source=github.com&utm_medium=referral&utm_content=igalklebanov/kysely-singlestore&utm_campaign=Badge_Grade)
 ![Powered by TypeScript](https://img.shields.io/badge/powered%20by-typescript-blue.svg)
 
