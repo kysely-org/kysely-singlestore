@@ -46,7 +46,7 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
     return await this.#executeMutationQuery(compiledQuery)
   }
 
-  streamQuery(): never {
+  async *streamQuery<O>(compiledQuery: CompiledQuery, chunkSize?: number): AsyncIterableIterator<QueryResult<O>> {
     throw new SingleStoreDataApiStreamingNotSupportedError()
   }
 
