@@ -62,7 +62,7 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Run node tests
+      - name: Test
         run: pnpm run test:nodejs
 
   run-lint-and-examples:
@@ -105,10 +105,10 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
-      - name: Run esm check
+      - name: Test ESM
         run: cd examples/esm && npm i && npm start
 
-      - name: Run cjs check
+      - name: Test CJS
         run: cd examples/cjs && npm i && npm start
 
   run-browser-tests:
@@ -223,5 +223,5 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Run Deno tests
+      - name: Test
         run: pnpm run test:deno
