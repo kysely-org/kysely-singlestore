@@ -83,11 +83,11 @@ VALUES
     (2, 'Arnold', 'Schwarzenegger', 'male', 46),
     (3, 'Syvester', 'Stallone', 'male', 75);
 
--- INSERT INTO pet (id, name, owner_id, species)
--- VALUES 
---     (1, 'Catto', 1, 'cat'),
---     (2, 'Doggo', 2, 'dog'),
---     (3, 'Hammo', 3, 'hamster');
+INSERT INTO pet (id, name, owner_id, species)
+VALUES 
+    (1, 'Catto', 1, 'cat'),
+    (2, 'Doggo', 2, 'dog'),
+    (3, 'Hammo', 3, 'hamster');
 
 -- INSERT INTO data_type_test 
 -- VALUES (
