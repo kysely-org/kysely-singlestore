@@ -17,7 +17,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-import: ^2.26.0
   eslint-plugin-prettier: ^4.2.1
-  kysely: ^0.22.0
+  kysely: ^0.23.4
   mocha: ^10.0.0
   mysql2: ^2.3.3
   node-fetch: ^2
@@ -46,7 +46,7 @@ devDependencies:
   eslint-config-prettier: 8.5.0_eslint@8.24.0
   eslint-plugin-import: 2.26.0_2azyxy5wfmd73v3pbt5rvmgcsm
   eslint-plugin-prettier: 4.2.1_cfn5x6ujhhgzv3423d6k7r2zzm
-  kysely: 0.22.0
+  kysely: 0.23.4
   mocha: 10.0.0
   mysql2: 2.3.3
   node-fetch: 2.6.7
@@ -1618,8 +1618,8 @@ packages:
       minimist: 1.2.6
     dev: true
 
-  /kysely/0.22.0:
-    resolution: {integrity: sha512-ZE3qWtnqLOalodzfK5QUEcm7AEulhxsPNuKaGFsC3XiqO92vMLm+mAHk/NnbSIOtC4RmGm0nsv700i8KDp1gfQ==}
+  /kysely/0.23.4:
+    resolution: {integrity: sha512-3icLnj1fahUtZsP9zzOvF4DcdhekGsLX4ZaoBaIz0ZeHegyRDdbwpJD7zezAJ+KwQZNDeKchel6MikFNLsSZIA==}
     engines: {node: '>=14.0.0'}
     dev: true
 

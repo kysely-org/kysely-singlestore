@@ -81,9 +81,13 @@ export class SingleStoreDataApiConnection implements DatabaseConnection {
   async #executeMutationQuery(compiledQuery: CompiledQuery): Promise<QueryResult<never>> {
     const result = await this.#sendPostRequest<SingleStoreDataApiExecResponseBody>('exec', compiledQuery)
 
+    const affectedRows = BigInt(result.rowsAffected)
+
     return {
       insertId: BigInt(result.lastInsertId),
-      numUpdatedOrDeletedRows: BigInt(result.rowsAffected),
+      numAffectedRows: affectedRows,
+      // @ts-ignore deprecated in kysely >= 0.23. keep for backwards compatibility.
+      numUpdatedOrDeletedRows: affectedRows,
       rows: [],
     }
   }
