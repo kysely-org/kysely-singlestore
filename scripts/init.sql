@@ -77,60 +77,60 @@ CREATE ROWSTORE TABLE data_type_test (
     null_col BIT
 );
 
-INSERT INTO person (id, first_name, last_name, gender, age)
-VALUES 
-    (1, 'Jennifer', 'Aniston', 'female', 25),
-    (2, 'Arnold', 'Schwarzenegger', 'male', 46),
-    (3, 'Syvester', 'Stallone', 'male', 75);
+-- INSERT INTO person (id, first_name, last_name, gender, age)
+-- VALUES 
+--     (1, 'Jennifer', 'Aniston', 'female', 25),
+--     (2, 'Arnold', 'Schwarzenegger', 'male', 46),
+--     (3, 'Syvester', 'Stallone', 'male', 75);
 
-INSERT INTO pet (id, name, owner_id, species)
-VALUES 
-    (1, 'Catto', 1, 'cat'),
-    (2, 'Doggo', 2, 'dog'),
-    (3, 'Hammo', 3, 'hamster');
+-- INSERT INTO pet (id, name, owner_id, species)
+-- VALUES 
+--     (1, 'Catto', 1, 'cat'),
+--     (2, 'Doggo', 2, 'dog'),
+--     (3, 'Hammo', 3, 'hamster');
 
-INSERT INTO data_type_test 
-VALUES (
-    9223372036854775807,
-    'binary',
-    b'10',
-    'blob',
-    0,
-    127,
-    'char',
-    '9999-12-31',
-    '9999-12-31 23:59:59',
-    '9999-12-31 23:59:59.999999',
-    99999999999999.9999,
-    -99999999999999.9999,
-    999999999.99,
-    'orange',
-    0,
-    9999.99,
-    'POLYGON((1 1,2 1,2 2, 1 2, 1 1))',
-    'POINT(1.5 1.5)',
-    2147483647,
-    -2147483648,
-    '{"x":"foo","y":null,"z":[]}',
-    'longblob',
-    'longtext',
-    'mediumblob',
-    8388607,
-    'mediumtext',
-    99999999999999.9999,
-    -999999999.99,
-    'apple,orange',
-    32767,
-    'text',
-    '838:59:59',
-    '839:59:59.999999',
-    '2038-01-19 03:14:07',
-    '2038-01-19 03:14:07.999999',
-    'tinyblob',
-    -128,
-    'tinytext',
-    'varbinary',
-    'varchar',
-    '2155',
-    null
-)
+-- INSERT INTO data_type_test 
+-- VALUES (
+--     9223372036854775807,
+--     'binary',
+--     b'10',
+--     'blob',
+--     0,
+--     127,
+--     'char',
+--     '9999-12-31',
+--     '9999-12-31 23:59:59',
+--     '9999-12-31 23:59:59.999999',
+--     99999999999999.9999,
+--     -99999999999999.9999,
+--     999999999.99,
+--     'orange',
+--     0,
+--     9999.99,
+--     'POLYGON((1 1,2 1,2 2, 1 2, 1 1))',
+--     'POINT(1.5 1.5)',
+--     2147483647,
+--     -2147483648,
+--     '{"x":"foo","y":null,"z":[]}',
+--     'longblob',
+--     'longtext',
+--     'mediumblob',
+--     8388607,
+--     'mediumtext',
+--     99999999999999.9999,
+--     -999999999.99,
+--     'apple,orange',
+--     32767,
+--     'text',
+--     '838:59:59',
+--     '839:59:59.999999',
+--     '2038-01-19 03:14:07',
+--     '2038-01-19 03:14:07.999999',
+--     'tinyblob',
+--     -128,
+--     'tinytext',
+--     'varbinary',
+--     'varchar',
+--     '2155',
+--     null
+-- )
