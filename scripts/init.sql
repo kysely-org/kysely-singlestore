@@ -77,11 +77,11 @@ CREATE ROWSTORE TABLE data_type_test (
     null_col BIT
 );
 
--- INSERT INTO person (id, first_name, last_name, gender, age)
--- VALUES 
---     (1, 'Jennifer', 'Aniston', 'female', 25),
---     (2, 'Arnold', 'Schwarzenegger', 'male', 46),
---     (3, 'Syvester', 'Stallone', 'male', 75);
+INSERT INTO person (id, first_name, last_name, gender, age)
+VALUES 
+    (1, 'Jennifer', 'Aniston', 'female', 25),
+    (2, 'Arnold', 'Schwarzenegger', 'male', 46),
+    (3, 'Syvester', 'Stallone', 'male', 75);
 
 -- INSERT INTO pet (id, name, owner_id, species)
 -- VALUES 
