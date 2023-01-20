@@ -52,7 +52,7 @@ export class SingleStoreDataApiResultDeserializer {
     switch (impreciseDataType) {
       case SingleStoreDataType.Bool:
       case SingleStoreDataType.Boolean:
-        return Boolean(value)
+        return this.#castTinyIntAsBoolean(value)
       case SingleStoreDataType.Date:
         return this.#config.castDatesAsNativeDates ? new Date(`${value}T00:00:00.000Z`) : value
       case SingleStoreDataType.Datetime:
@@ -63,7 +63,7 @@ export class SingleStoreDataApiResultDeserializer {
       case SingleStoreDataType.Fixed:
         return this.#config.unwrapDecimals ? Number(value) : value
       case SingleStoreDataType.TinyInt:
-        return this.#config.castTinyIntAsBoolean ? Boolean(value) : value
+        return this.#config.castTinyIntAsBoolean ? this.#castTinyIntAsBoolean(value) : value
       default:
         return value
     }
@@ -88,5 +88,9 @@ export class SingleStoreDataApiResultDeserializer {
       default:
         return value
     }
+  }
+
+  #castTinyIntAsBoolean(value: unknown): boolean {
+    return String(value) !== '0'
   }
 }
