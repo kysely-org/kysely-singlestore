@@ -266,11 +266,9 @@ describe('SingleStoreDataApiDialect', () => {
         sql.ref('name'),
         sql.ref('pet_id'),
         sql.ref('price'),
-      ])}) select ${sql.join([
-        sql.literal('Wheel').as('name'),
-        sql.ref('id'),
-        sql`${9.99}`.as('price'),
-      ])} from ${sql.table('hammo')}`.execute(db)
+      ])}) select ${sql.join([sql.literal('Wheel').as('name'), sql.ref('id'), sql`9.99`.as('price')])} from ${sql.table(
+        'hammo',
+      )}`.execute(db)
 
       expect(result.insertId).to.not.be.undefined
 
