@@ -33,6 +33,7 @@
     "fmt:check": "prettier --check .",
     "lint": "eslint src --ext .ts",
     "prepack": "pnpm run lint && pnpm run build",
+    "test": "pnpm run test:nodejs && pnpm run test:browser && pnpm run test:deno",
     "test:browser": "esbuild tests/browser/main.ts --bundle --outfile=tests/browser/bundle.js && node tests/browser/test.js",
     "test:deno": "pnpm run test:deno:local && pnpm run test:deno:cdn",
     "test:deno:cdn": "deno run --allow-net --import-map=tests/deno/import_map.json tests/deno/cdn.test.ts",

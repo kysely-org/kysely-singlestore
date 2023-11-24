@@ -3,7 +3,7 @@ services:
     image: ghcr.io/singlestore-labs/singlestoredb-dev
     environment:
       ROOT_PASSWORD: test
-      SINGLESTORE_LICENSE: <singlestore_license>
+      SINGLESTORE_LICENSE: $SINGLESTORE_LICENSE
     ports:
       - '3306:3306'
       - '8080:8080'
