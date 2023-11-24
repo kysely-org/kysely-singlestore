@@ -52,9 +52,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-2-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-2-
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: pnpm i
