@@ -9,6 +9,6 @@
 
 ## Running Tests
 
-1. Start a SingleStore container by running `SINGLESTORE_LICENSE=<your_singlestore_license_key> docker-compose up` in your terminal and wait for it to finish starting up.
+1. Start a SingleStore container by running `SINGLESTORE_LICENSE=<your_singlestore_license_key> docker-compose up --force-recreate` in your terminal and wait for it to finish starting up.
 2. Clone the repository.
 3. Run `pnpm test`.
