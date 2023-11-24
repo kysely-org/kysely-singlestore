@@ -1,19 +1,21 @@
-# Testing
+# Contributing
 
-## Preqrequisites
+## Testing
+
+### Preqrequisites
 
 1.  Docker installed and running.
 2.  pnpm v8 installed globally and `pnpm install` ran.
 3.  A SingleStore Self-Managed license key.
 4.  Run `pnpm exec playwright install`
 
-## Running Tests
+### Running Tests
 
 1.  Start a SingleStore container by running `SINGLESTORE_LICENSE=<your_singlestore_license_key> docker-compose up --force-recreate` in your terminal and wait for it to finish starting up.
 2.  Clone the repository.
 3.  Run `pnpm test`.
 
-# Submitting changes
+## Submitting changes
 
 1.  Fork the repository.
 2.  Create a branch from `main` with a descriptive name.
