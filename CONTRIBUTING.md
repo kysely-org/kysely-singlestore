@@ -5,6 +5,7 @@
 1. Docker installed and running.
 2. pnpm v8 installed globally and `pnpm install` ran.
 3. A SingleStore Self-Managed license key.
+4. Run `pnpm exec playwright install`
 
 ## Running Tests
 

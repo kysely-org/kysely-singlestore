@@ -9,4 +9,4 @@ services:
       - '8080:8080'
       - '9000:9000'
     volumes:
-      - ${PWD}/scripts/init.sql:/init.sql
+      - ./scripts/init.sql:/init.sql
