@@ -33,14 +33,14 @@ CREATE ROWSTORE TABLE toy (
 );
 
 CREATE ROWSTORE TABLE data_type_test (
-    bigint_col BIGINT NOT NULL,
-    binary_col BINARY(16) NOT NULL,
-    bit_col BIT(64) NOT NULL,
-    blob_col BLOB(16) NOT NULL,
-    bool_col BOOL NOT NULL,
-    boolean_col BOOLEAN NOT NULL,
-    char_col CHAR(16) NOT NULL,
-    date_col DATE NOT NULL,
+    bigint_col BIGINT NOT NULL
+    ,binary_col BINARY(16) NOT NULL
+    ,bit_col BIT(64) NOT NULL
+    ,blob_col BLOB(16) NOT NULL
+    ,bool_col BOOL NOT NULL
+    ,boolean_col BOOLEAN NOT NULL
+    ,char_col CHAR(16) NOT NULL
+    ,date_col DATE NOT NULL
     -- datetime_col DATETIME NOT NULL,
     -- datetime6_col DATETIME(6) NOT NULL,
     -- dec_col DEC(18,4) NOT NULL,
@@ -91,14 +91,14 @@ VALUES
 
 INSERT INTO data_type_test 
 VALUES (
-    9223372036854775807,
-    'binary',
-    b'10',
-    'blob',
-    0,
-    127,
-    'char',
-    '9999-12-31',
+    9223372036854775807
+    ,'binary'
+    ,b'10'
+    ,'blob'
+    ,0
+    ,127
+    ,'char'
+    ,'9999-12-31'
     -- '9999-12-31 23:59:59',
     -- '9999-12-31 23:59:59.999999',
     -- 99999999999999.9999,
