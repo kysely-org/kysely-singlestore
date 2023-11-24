@@ -43,7 +43,7 @@ CREATE ROWSTORE TABLE data_type_test (
     ,date_col DATE NOT NULL
     ,datetime_col DATETIME NOT NULL
     ,datetime6_col DATETIME(6) NOT NULL
-    -- dec_col DEC(18,4) NOT NULL,
+    ,dec_col DEC(18,4) NOT NULL
     -- decimal_col DECIMAL(18,4) NOT NULL,
     -- double_col DOUBLE NOT NULL,
     -- enum_col ENUM('apple', 'orange') NOT NULL,
@@ -101,7 +101,7 @@ VALUES (
     ,'9999-12-31'
     ,'9999-12-31 23:59:59'
     ,'9999-12-31 23:59:59.999999'
-    -- 99999999999999.9999,
+    ,99999999999999.9999
     -- -99999999999999.9999,
     -- 999999999.99,
     -- 'orange',
