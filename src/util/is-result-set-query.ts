@@ -25,7 +25,13 @@ import {
  * keyword is `with`, we need to ensure it is not `with...delete`, `with...insert`, `with...replace` or `with...update`.
  */
 export function isResultSetQuery(compiledQuery: CompiledQuery): boolean {
-  return isSelectQuery(compiledQuery) || isExplainQuery(compiledQuery)
+  return isSelectQuery(compiledQuery) || isEchoQuery(compiledQuery) || isExplainQuery(compiledQuery)
+}
+
+function isEchoQuery(compiledQuery: CompiledQuery): boolean {
+  const {sql} = compiledQuery
+
+  return RawNode.is(compiledQuery.query) && sql.match(/^\s*\(?echo/i) != null
 }
 
 function isSelectQuery(compiledQuery: CompiledQuery): boolean {
