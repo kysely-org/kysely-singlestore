@@ -65,7 +65,7 @@ CREATE ROWSTORE TABLE data_type_test (
     ,smallint_col SMALLINT NOT NULL
     ,text_col TEXT(16) NOT NULL
     ,time_col TIME NOT NULL
-    -- ,time6_col TIME(6) NOT NULL
+    ,time6_col TIME(6) NOT NULL
     ,timestamp_col TIMESTAMP NOT NULL
     ,timestamp6_col TIMESTAMP(6) NOT NULL
     ,tinyblob_col TINYBLOB NOT NULL
@@ -123,7 +123,7 @@ VALUES (
     ,32767
     ,'text'
     ,'838:59:59'
-    -- ,'839:59:59.999999'
+    ,'838:59:59.999999'
     ,'2038-01-19 03:14:07'
     ,'2038-01-19 03:14:07.999999'
     ,'tinyblob'
