@@ -60,8 +60,8 @@ devDependencies:
     specifier: ^10.2.0
     version: 10.2.0
   mysql2:
-    specifier: ^3.6.5
-    version: 3.6.5
+    specifier: ^3.9.9
+    version: 3.9.9
   node-fetch:
     specifier: ^2
     version: 2.6.7
@@ -2175,8 +2175,8 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
-  /mysql2@3.6.5:
-    resolution: {integrity: sha512-pS/KqIb0xlXmtmqEuTvBXTmLoQ5LmAz5NW/r8UyQ1ldvnprNEj3P9GbmuQQ2J0A4LO+ynotGi6TbscPa8OUb+w==}
+  /mysql2@3.9.9:
+    resolution: {integrity: sha512-Qtb2RUxwWMFkWXqF7Rd/7ySkupbQnNY7O0zQuQYgPcuJZ06M36JG3HIDEh/pEeq7LImcvA6O3lOVQ9XQK+HEZg==}
     engines: {node: '>= 8.0'}
     dependencies:
       denque: 2.1.0
